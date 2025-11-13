@@ -43,7 +43,7 @@ This repository contains a complete sound effect and music library for the theat
 
 ### For Director - Sound Review
 
-1. **Open the review tool:** [Click here to open DIRECTOR_SOUND_REVIEW.html](https://your-username.github.io/wonderful-life-sound/)
+1. **Open the review tool:** [Click here to open DIRECTOR_SOUND_REVIEW.html](https://mshipleydp.github.io/wonderful-life-sound/)
 2. **Listen to sounds** - Click play on any audio file
 3. **Mark favorites** - Check boxes for sounds you want to use
 4. **Rate files** - Give 1-5 stars to show preferences
@@ -55,7 +55,7 @@ This repository contains a complete sound effect and music library for the theat
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/wonderful-life-sound.git
+git clone https://github.com/MShipleyDP/wonderful-life-sound.git
 cd wonderful-life-sound
 
 # Open the review tool in your browser

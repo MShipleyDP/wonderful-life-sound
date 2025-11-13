@@ -886,8 +886,9 @@
                             const filename = fileData.filename || fileData;
                             const url = fileData.url || '';
 
-                            // Only migrate if it's a GitHub Pages URL
-                            if (url.includes('github.io') || url.includes('mshipleydp')) {
+                            // Only migrate if it's a GitHub Pages URL (not already on Firebase Storage)
+                            if ((url.includes('github.io') || url.includes('mshipleydp')) &&
+                                !url.includes('firebasestorage.googleapis.com')) {
                                 filesToMigrate.push({
                                     categoryKey,
                                     filename,

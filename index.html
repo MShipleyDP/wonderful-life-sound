@@ -382,329 +382,36 @@
         const database = firebase.database();
 
         // Sound categories data
-        const soundData = {
-            "01_breaking_glass": {
-                title: "Breaking Glass",
-                directorRequest: "Breaking glass",
-                description: "Multiple scenes with glass breaking",
-                files: [
-                    "01_glass_breaking.mp3",
-                    "02_glass_shattering.mp3",
-                    "03_broken_glass.mp3",
-                    "04_object_breaking.mp3",
-                    "05_plate_smashing.mp3"
-                ]
-            },
-            "02_bell_angel_wings": {
-                title: "Bell (Angel Wings) 🔔",
-                directorRequest: "Bell (for every time a bell rings and angel gets his wings)",
-                description: "KEY MOTIF - 'Every time a bell rings, an angel gets his wings'",
-                files: [
-                    "01_small_bell_ring.mp3",
-                    "02_small_bell_ringing.mp3",
-                    "03_bell_ring_clear.mp3",
-                    "04_bell_ringing_bright.mp3",
-                    "05_bell_ringing.mp3",
-                    "06_sleigh_bells_christmas.mp3",
-                    "07_hand_bell_short_ring.mp3",
-                    "08_christmas_bells_box.mp3",
-                    "09_church_bells_chiming.mp3",
-                    "10_small_church_bell.mp3"
-                ]
-            },
-            "03_train_whistle": {
-                title: "Train Whistle",
-                directorRequest: "Train whistle",
-                description: "George's dreams of travel",
-                files: [
-                    "01_steam_train_pass_by_whistle.mp3",
-                    "02_steam_train_whistle_depart.mp3",
-                    "03_distant_train_whistle.mp3",
-                    "04_tourist_train_chugging.mp3",
-                    "05_steam_train_whistle_high_pitch.mp3"
-                ]
-            },
-            "04_fireworks": {
-                title: "Fireworks",
-                directorRequest: "Fireworks",
-                description: "Celebration scenes",
-                files: [
-                    "01_fireworks_celebration.mp3",
-                    "02_realistic_fireworks_boom_and_crackle.mp3",
-                    "03_festive_fireworks_celebration.mp3",
-                    "04_fireworks_burst.mp3"
-                ]
-            },
-            "05_ice_cracking": {
-                title: "Ice Cracking",
-                directorRequest: "Ice cracking",
-                description: "Harry falls through ice scene",
-                files: [
-                    "01_ice_cracking.mp3",
-                    "02_ice_breaking.mp3",
-                    "03_cracking_ice.mp3",
-                    "04_ice_shattering.mp3"
-                ]
-            },
-            "06_1920s_music": {
-                title: "1920s Music",
-                directorRequest: "1920s music",
-                description: "Period appropriate background music",
-                files: [
-                    "01_1920s_song_jazz_orchestra.mp3",
-                    "02_1920s_song_orangefreesounds.mp3",
-                    "03_bennie_moten_kater_st_rag.mp3",
-                    "04_bennie_moten_south_1924.mp3",
-                    "05_bucktown_5_hot_mittens.mp3"
-                ]
-            },
-            "07_phone_ringing": {
-                title: "Phone Ringing ☎️",
-                directorRequest: "Phone ringing",
-                description: "Multiple phone calls throughout (Sam Wainwright, etc.)",
-                files: [
-                    "01_old_phone_ringing.mp3",
-                    "02_telephone_ring_single.mp3",
-                    "03_telephone_ring_four_times.mp3",
-                    "04_telephone_ring_five_times.mp3",
-                    "05_rotary_phone_ring.mp3",
-                    "06_vintage_phone_ring.mp3"
-                ]
-            },
-            "08_city_noises": {
-                title: "City Noises",
-                directorRequest: "General city noises (cars honking, etc)",
-                description: "Bedford Falls ambience (cars honking, traffic, etc.)",
-                files: [
-                    "01_city_traffic_sounds.mp3",
-                    "02_street_noise_ambience.mp3",
-                    "03_traffic_ambience.mp3",
-                    "04_port_town_ambience.mp3",
-                    "05_empty_city_quiet.mp3"
-                ]
-            },
-            "09_piano_christmas_music": {
-                title: "Piano Christmas Music 🎹",
-                directorRequest: "Piano Christmas Music for intermission, before/after show",
-                description: "Intermission, pre/post show",
-                files: [
-                    "01_joy_to_the_world_piano.mp3",
-                    "02_jingle_bells_piano.mp3",
-                    "03_traditional_christmas_piano_bells.mp3",
-                    "04_instrumental_christmas_upbeat.mp3",
-                    "05_traditional_christmas_festive.mp3",
-                    "06_christmas_intro_song.mp3"
-                ]
-            },
-            "10_angelic_heavenly_sound": {
-                title: "Angelic/Heavenly Sound 👼",
-                directorRequest: "Angelic heavenly sound (for when the angels appear)",
-                description: "Angel appearances, opening scene",
-                files: [
-                    "01_angels_singing.mp3",
-                    "02_heavenly_choir.mp3",
-                    "03_angelic_choir_ahh.mp3",
-                    "04_heavenly_angelic_vocal_ahh.mp3",
-                    "05_magical_ethereal_harp_arpeggio.mp3",
-                    "06_celestial_chimes.mp3"
-                ]
-            },
-            "11_car_taxi_sounds": {
-                title: "Car/Taxi Sounds 🚕",
-                directorRequest: "Car sounds for Ernie's taxi",
-                description: "Ernie's taxi scenes",
-                files: [
-                    "01_car_horn.mp3",
-                    "02_car_start_engine.mp3",
-                    "03_old_car_horn.mp3",
-                    "04_car_door_close.mp3",
-                    "05_engine_running.mp3",
-                    "06_car_driving_away.mp3"
-                ]
-            },
-            "12_1920s_police_sirens": {
-                title: "1920s Police Sirens 🚨",
-                directorRequest: "1920s police sirens",
-                description: "Bert the cop",
-                files: [
-                    "01_siren_sound.mp3",
-                    "02_klaxon_vintage.mp3",
-                    "03_air_raid_siren.mp3",
-                    "04_fire_engine_wail.mp3"
-                ]
-            },
-            "13_crashing_garbage_cans": {
-                title: "Crashing Garbage Cans",
-                directorRequest: "Crashing garbage cans",
-                description: "George's desperation scene",
-                files: [
-                    "01_metal_crash.mp3",
-                    "02_falling_garbage_pile.mp3",
-                    "03_metal_junk_crash.mp3",
-                    "04_junk_crash.mp3"
-                ]
-            },
-            "14_party_graduation_sounds": {
-                title: "Party/Graduation Sounds 🎉",
-                directorRequest: "Party sounds (graduation party in the 1920s)",
-                description: "1920s graduation party (Charleston dance)",
-                files: [
-                    "01_crowd_cheering.mp3",
-                    "02_people_talking_party.mp3",
-                    "03_happy_celebration_music.mp3",
-                    "04_charleston_dance_1920s.mp3",
-                    "05_charleston_foxtrot_1925.mp3",
-                    "06_charleston_rag_eubie_blake.mp3"
-                ]
-            },
-            "15_wedding_march_cheers": {
-                title: "Wedding March/Cheers 💒",
-                directorRequest: "Wedding march music/cheers",
-                description: "George & Mary's impromptu wedding",
-                files: [
-                    "01_applause_small_group.mp3",
-                    "02_applause_people_clapping.mp3",
-                    "03_wedding_celebration.mp3"
-                ]
-            },
-            "16_camera_snapping": {
-                title: "Camera Snapping 📷",
-                directorRequest: "Camera snapping sound",
-                description: "Photography moments",
-                files: [
-                    "01_camera_shutter.mp3",
-                    "02_old_style_photo_camera.mp3",
-                    "03_vintage_camera_winding.mp3",
-                    "04_camera_shutter_classic.mp3"
-                ]
-            },
-            "17_stars_and_stripes_forever": {
-                title: "Stars & Stripes Forever 🇺🇸",
-                directorRequest: "Stars and Stripes Forever music",
-                description: "Harry's war hero return - patriotic celebration",
-                files: [
-                    "01_trumpet_reveille.mp3",
-                    "stars_and_stripes_forever_usmc_band.mp3",
-                    "anchors_aweigh_us_navy_band.mp3",
-                    "04_semper_fidelis_usmc_band.mp3"
-                ]
-            },
-            "18_war_plane_sounds": {
-                title: "War Plane Sounds ✈️",
-                directorRequest: "War plane sounds",
-                description: "WWII references",
-                files: [
-                    "01_propeller_plane.mp3",
-                    "02_vintage_biplane_flyover.mp3",
-                    "03_stuka_dive_bomber_siren.mp3",
-                    "04_propeller_plane_low_overhead.mp3"
-                ]
-            },
-            "19_splashing_water": {
-                title: "Splashing Water 💧",
-                directorRequest: "Splashing water",
-                description: "Bridge/river scenes (Clarence jumps in)",
-                files: [
-                    "01_big_water_splash.mp3",
-                    "02_water_splashing.mp3",
-                    "03_small_water_splash.mp3",
-                    "04_small_rock_water_splash.mp3",
-                    "05_small_object_splash.mp3",
-                    "06_calming_river_ambient.mp3"
-                ]
-            },
-            "20_italian_music_bar_sounds": {
-                title: "Italian Music/Bar Sounds 🍷",
-                directorRequest: "Italian Music/Bar sounds",
-                description: "Martini's bar - warm, friendly atmosphere",
-                files: [
-                    "01_electronic_soft_jazz.mp3",
-                    "02_warm_ambient_music.mp3",
-                    "03_people_talking_ambience.mp3",
-                    "04_thanksgiving_dinner_ambience.mp3",
-                    "05_glass_clinking.mp3"
-                ]
-            },
-            "21_reality_shift_transition": {
-                title: "Reality Shift/Transition 🌀",
-                directorRequest: "Some kind of sound to indicate the change to George never having been born",
-                description: "George never been born - otherworldly effect",
-                files: [
-                    "01_whoosh_echo.mp3",
-                    "02_sci_fi_dimensional_energy_whoosh.mp3",
-                    "03_futuristic_deep_sci_fi_whoosh.mp3",
-                    "04_reverse_whoosh_horror.mp3",
-                    "05_intense_deep_rumbling_whoosh.mp3"
-                ]
-            },
-            "22_jazzy_bar_music": {
-                title: "Jazzy Bar Music 🎷",
-                directorRequest: "Jazzy bar music and sounds",
-                description: "Pottersville bar - dark, seedy atmosphere",
-                files: [
-                    "01_dramatic_noir_music.mp3",
-                    "02_suspense_tense_music.mp3",
-                    "03_dark_tense_underscore.mp3",
-                    "04_electro_blues_lounge.mp3",
-                    "05_jazz_brunch_incompetech.mp3",
-                    "06_lounge_bar_orangefreesounds.mp3",
-                    "07_teller_of_tales_incompetech.mp3",
-                    "08_the_show_must_be_go_incompetech.mp3",
-                    "09_prelude_and_action_incompetech.mp3",
-                    "10_sneaky_snitch_incompetech.mp3",
-                    "11_backbay_lounge_incompetech.mp3"
-                ]
-            },
-            "23_drunken_city_sounds": {
-                title: "Drunken City Sounds 🍺",
-                directorRequest: "Drunken city sounds",
-                description: "Pottersville streets - rough, dangerous atmosphere",
-                files: [
-                    "01_crowd_noise_bar.mp3",
-                    "02_angry_crowd_yelling_booing.mp3",
-                    "03_chaotic_street_protest.mp3",
-                    "04_crowd_shouting_panic.mp3",
-                    "05_waterfront_brawl_riot.mp3",
-                    "06_rowdy_crowd_vintage.mp3",
-                    "07_angry_crowd_shouting.mp3"
-                ]
-            },
-            "24_somber_cemetery_music": {
-                title: "Somber Cemetery Music ⚰️",
-                directorRequest: "Somber, eerie music for a cemetery scene",
-                description: "Cemetery scene - eerie, melancholy mood",
-                files: [
-                    "01_sad_music.mp3",
-                    "02_melancholy_piano_music.mp3",
-                    "03_dark_ambient_background.mp3",
-                    "04_haunting_piano_melody.mp3",
-                    "05_creepy_atmospheric_music.mp3",
-                    "06_scary_wind_drone_ambience.mp3"
-                ]
-            },
-            "25_time_slowing_effect": {
-                title: "Time Slowing Effect ⏰",
-                directorRequest: "Joseph slows down time so some kind of sound effect for when time is slowed",
-                description: "Joseph slows down time",
-                files: [
-                    "01_slow_motion_effect.mp3",
-                    "02_time_freeze.mp3",
-                    "03_time_stop.mp3",
-                    "04_rewind.mp3",
-                    "05_reverse_clock_ticking.mp3",
-                    "06_reverse_swoosh.mp3"
-                ]
-            }
-        };
+        // Sound data loaded from Firebase - see init() function
+        let soundData = {};
 
         // Initialize page
         function init() {
-            generateNavigation();
-            generateCategories();
-            loadProgress();
+            // Load sounds from Firebase first
+            database.ref('sounds').once('value')
+                .then((snapshot) => {
+                    soundData = snapshot.val();
 
-            // Auto-save every 30 seconds
-            setInterval(saveProgress, 30000);
+                    if (!soundData) {
+                        console.error('No sound data found in Firebase');
+                        document.getElementById('soundCategories').innerHTML =
+                            '<p style="color: red; padding: 40px; text-align: center;">Error loading sounds from database. Please refresh the page.</p>';
+                        return;
+                    }
+
+                    // Now generate the UI
+                    generateNavigation();
+                    generateCategories();
+                    loadProgress();
+
+                    // Auto-save every 30 seconds
+                    setInterval(saveProgress, 30000);
+                })
+                .catch((error) => {
+                    console.error('Error loading sounds:', error);
+                    document.getElementById('soundCategories').innerHTML =
+                        '<p style="color: red; padding: 40px; text-align: center;">Error connecting to database. Please refresh the page.</p>';
+                });
         }
 
         // Generate navigation

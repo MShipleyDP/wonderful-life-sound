@@ -279,6 +279,79 @@
             color: #7f8c8d;
             font-size: 1.1em;
         }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .sound-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+
+        .sound-item:hover {
+            background: #f8f9fa;
+        }
+
+        .sound-info {
+            flex-grow: 1;
+        }
+
+        .sound-size {
+            color: #95a5a6;
+            font-size: 0.9em;
+            margin-right: 15px;
+        }
+
+        .category-header {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            margin: 15px 0 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .category-header:hover {
+            background: #34495e;
+        }
+
+        .category-content {
+            padding-left: 15px;
+        }
+
+        .token-status {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .token-status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .token-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
     </style>
 
     <!-- Firebase SDK -->
@@ -314,26 +387,25 @@
         <!-- Tab 2: Manage Sounds -->
         <div id="soundsTab" class="tab-content">
             <div class="section">
+                <h2>GitHub Authentication</h2>
+                <p style="color: #7f8c8d; margin-bottom: 10px;">Enter your GitHub Personal Access Token to manage sounds</p>
+                <div class="form-group">
+                    <label for="githubToken">GitHub Token:</label>
+                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" style="width: 400px;">
+                    <button class="btn btn-primary" onclick="saveGithubToken()">Save Token</button>
+                    <button class="btn btn-success" onclick="testGithubToken()">Test Connection</button>
+                </div>
+                <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 10px;">
+                    Create a token at: <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a><br>
+                    Required permissions: <code>repo</code> (full control of private repositories)
+                </p>
+            </div>
+
+            <div class="section">
                 <h2>Current Sound Library</h2>
                 <div id="soundsContent" class="loading">
                     <p>Loading sounds...</p>
                 </div>
-            </div>
-
-            <div class="section">
-                <h2>Instructions for Managing Sounds</h2>
-                <p><strong>To add new sounds:</strong></p>
-                <ol style="margin-left: 20px; margin-top: 10px;">
-                    <li>Add MP3 files to the appropriate category folder locally</li>
-                    <li>Run: <code>node cli-tools.js add-sound [category] [filename.mp3]</code></li>
-                    <li>Commit and push to GitHub: <code>git add . && git commit -m "Add new sound" && git push</code></li>
-                </ol>
-                <p style="margin-top: 15px;"><strong>To remove sounds:</strong></p>
-                <ol style="margin-left: 20px; margin-top: 10px;">
-                    <li>Run: <code>node cli-tools.js remove-sound [category] [filename.mp3]</code></li>
-                    <li>Delete the MP3 file from the folder</li>
-                    <li>Commit and push to GitHub</li>
-                </ol>
             </div>
         </div>
 
@@ -445,18 +517,103 @@
         // Load sounds from hardcoded data (since Firebase database setup had issues)
         function loadSounds() {
             const container = document.getElementById('soundsContent');
-            container.innerHTML = '<div class="loading"><p>Loading sounds from local data...</p></div>';
+            container.innerHTML = '<div class="loading"><p>Loading sounds...</p></div>';
 
-            // This would ideally load from Firebase, but we'll show instructions instead
-            container.innerHTML = `
-                <div class="sound-list">
-                    <p style="margin-bottom: 20px;">Sound management is done via CLI tools for now.</p>
-                    <p style="background: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                        <strong>💡 Tip:</strong> Use the CLI tools (see instructions below) to add or remove sounds.
-                        The changes will automatically sync to the website after you push to GitHub.
-                    </p>
-                </div>
-            `;
+            // Load sounds from Firebase
+            database.ref('sounds').once('value')
+                .then((snapshot) => {
+                    const sounds = snapshot.val();
+
+                    if (!sounds) {
+                        container.innerHTML = '<p style="color: #95a5a6; text-align: center; padding: 40px;">No sounds found in database.</p>';
+                        return;
+                    }
+
+                    let html = '';
+                    const categories = Object.keys(sounds).sort((a, b) => (sounds[a].order || 0) - (sounds[b].order || 0));
+
+                    categories.forEach(categoryKey => {
+                        const category = sounds[categoryKey];
+                        const fileCount = category.files?.length || 0;
+
+                        html += `
+                            <div class="category-header" onclick="toggleCategory('${categoryKey}')">
+                                <strong>${category.title}</strong> (${fileCount} files)
+                            </div>
+                            <div class="category-content" id="cat-${categoryKey}" style="display: none;">
+                        `;
+
+                        if (category.files && category.files.length > 0) {
+                            category.files.forEach((fileData) => {
+                                const filename = fileData.filename || fileData;
+                                html += `
+                                    <div class="sound-item">
+                                        <div class="sound-info">
+                                            <strong>${filename}</strong>
+                                        </div>
+                                        <button class="btn btn-delete" onclick="deleteSound('${categoryKey}', '${filename}')">
+                                            🗑️ Delete
+                                        </button>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            html += '<p style="padding: 10px; color: #95a5a6;">No files in this category</p>';
+                        }
+
+                        html += '</div>';
+                    });
+
+                    container.innerHTML = html;
+                })
+                .catch((error) => {
+                    console.error('Error loading sounds:', error);
+                    container.innerHTML = '<p style="color: red; text-align: center; padding: 40px;">Error loading sounds.</p>';
+                });
+        }
+
+        // Toggle category visibility
+        function toggleCategory(categoryKey) {
+            const content = document.getElementById(`cat-${categoryKey}`);
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        }
+
+        // Delete sound from Firebase database
+        async function deleteSound(categoryKey, filename) {
+            if (!confirm(`Delete "${filename}" from ${categoryKey}?\n\nThis will remove it from the database, but you'll need to delete the actual MP3 file from GitHub manually.`)) {
+                return;
+            }
+
+            try {
+                // Get current category data
+                const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
+                const category = snapshot.val();
+
+                if (!category || !category.files) {
+                    showStatus('Category not found', true);
+                    return;
+                }
+
+                // Filter out the file
+                const updatedFiles = category.files.filter(f => {
+                    const fname = f.filename || f;
+                    return fname !== filename;
+                });
+
+                // Update Firebase
+                await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
+                await database.ref(`sounds/${categoryKey}/fileCount`).set(updatedFiles.length);
+
+                showStatus(`Deleted ${filename}`);
+                loadSounds(); // Reload the list
+            } catch (error) {
+                console.error('Error deleting sound:', error);
+                showStatus('Error deleting sound', true);
+            }
         }
 
         // Load statistics
@@ -495,9 +652,10 @@
         }
 
         // Show status message
-        function showStatus(message) {
+        function showStatus(message, isError = false) {
             const statusEl = document.getElementById('statusMessage');
             statusEl.textContent = message;
+            statusEl.style.background = isError ? '#e74c3c' : '#27ae60';
             statusEl.classList.add('show');
 
             setTimeout(() => {

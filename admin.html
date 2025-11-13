@@ -501,6 +501,9 @@
         const database = firebase.database();
         const storage = firebase.storage();
 
+        // Cloud Functions URL
+        const FUNCTIONS_URL = 'https://us-central1-wonderful-life-sound.cloudfunctions.net';
+
         // Sound categories metadata (same as main site)
         const GITHUB_PAGES_URL = 'https://mshipleydp.github.io/wonderful-life-sound';
 
@@ -732,7 +735,7 @@
             }
         }
 
-        // Upload sound file to Firebase Storage
+        // Upload sound file to Firebase Storage via Cloud Function
         async function uploadSound() {
             const categoryKey = document.getElementById('uploadCategory').value;
             const fileInput = document.getElementById('uploadFile');
@@ -764,10 +767,10 @@
             // Show progress
             document.getElementById('uploadProgress').style.display = 'block';
             document.getElementById('uploadProgressBar').style.width = '0%';
-            document.getElementById('uploadStatus').textContent = 'Preparing upload...';
+            document.getElementById('uploadStatus').textContent = 'Uploading...';
 
             try {
-                // Get current category data
+                // Get current category data to check for duplicates
                 const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
                 const category = snapshot.val();
 
@@ -790,51 +793,37 @@
                     return;
                 }
 
-                // Upload to Firebase Storage
-                const storagePath = `sounds/${categoryKey}/${filename}`;
-                const storageRef = storage.ref(storagePath);
-                const uploadTask = storageRef.put(file);
+                // Create FormData for Cloud Function
+                const formData = new FormData();
+                formData.append('category', categoryKey);
+                formData.append('customFilename', customFilename);
+                formData.append('file', file);
 
-                // Monitor upload progress
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        document.getElementById('uploadProgressBar').style.width = progress + '%';
-                        document.getElementById('uploadStatus').textContent =
-                            `Uploading... ${Math.round(progress)}%`;
-                    },
-                    (error) => {
-                        console.error('Upload error:', error);
-                        showStatus('Upload failed: ' + error.message, true);
-                        document.getElementById('uploadProgress').style.display = 'none';
-                    },
-                    async () => {
-                        // Upload complete, get download URL
-                        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                // Call Cloud Function
+                document.getElementById('uploadProgressBar').style.width = '50%';
+                const response = await fetch(`${FUNCTIONS_URL}/uploadSound`, {
+                    method: 'POST',
+                    body: formData
+                });
 
-                        // Add to database
-                        const newFile = {
-                            filename: filename,
-                            url: downloadURL,
-                            path: storagePath
-                        };
+                document.getElementById('uploadProgressBar').style.width = '100%';
 
-                        const updatedFiles = [...existingFiles, newFile];
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Upload failed');
+                }
 
-                        await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
-                        await database.ref(`sounds/${categoryKey}/fileCount`).set(updatedFiles.length);
+                const result = await response.json();
 
-                        showStatus(`✅ Uploaded ${filename} to ${category.title}`);
+                showStatus(`✅ Uploaded ${result.filename}`);
 
-                        // Clear form
-                        fileInput.value = '';
-                        document.getElementById('uploadFilename').value = '';
-                        document.getElementById('uploadProgress').style.display = 'none';
+                // Clear form
+                fileInput.value = '';
+                document.getElementById('uploadFilename').value = '';
+                document.getElementById('uploadProgress').style.display = 'none';
 
-                        // Reload the list
-                        loadSounds();
-                    }
-                );
+                // Reload the list
+                loadSounds();
 
             } catch (error) {
                 console.error('Error uploading sound:', error);
@@ -933,47 +922,32 @@
             }
         }
 
-        // Migrate a single file
+        // Migrate a single file via Cloud Function
         async function migrateFile(fileInfo) {
             const { categoryKey, filename, url } = fileInfo;
 
             try {
-                addMigrationLog(`⬇️ Fetching: ${filename}`);
+                addMigrationLog(`⬆️ Migrating: ${filename}`);
 
-                // Fetch the MP3 from GitHub
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                const blob = await response.blob();
-                addMigrationLog(`⬆️ Uploading: ${filename} (${(blob.size / 1024 / 1024).toFixed(2)} MB)`);
-
-                // Upload to Firebase Storage
-                const storagePath = `sounds/${categoryKey}/${filename}`;
-                const storageRef = storage.ref(storagePath);
-                await storageRef.put(blob);
-
-                // Get download URL
-                const downloadURL = await storageRef.getDownloadURL();
-
-                // Update database
-                const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
-                const category = snapshot.val();
-
-                const updatedFiles = category.files.map(f => {
-                    const fname = f.filename || f;
-                    if (fname === filename) {
-                        return {
-                            filename: filename,
-                            url: downloadURL,
-                            path: storagePath
-                        };
-                    }
-                    return f;
+                // Call Cloud Function to migrate the file
+                const response = await fetch(`${FUNCTIONS_URL}/migrateFile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        categoryKey,
+                        filename,
+                        githubUrl: url
+                    })
                 });
 
-                await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Migration failed');
+                }
+
+                const result = await response.json();
 
                 migrationStats.completed++;
                 addMigrationLog(`✅ Migrated: ${filename}`);
@@ -1023,52 +997,35 @@
             }
         }
 
-        // Delete sound from Firebase database
+        // Delete sound via Cloud Function
         async function deleteSound(categoryKey, filename) {
             if (!confirm(`Delete "${filename}" from ${categoryKey}?\n\nThis will permanently delete the file and remove it from the database.`)) {
                 return;
             }
 
             try {
-                // Get current category data
-                const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
-                const category = snapshot.val();
-
-                if (!category || !category.files) {
-                    showStatus('Category not found', true);
-                    return;
-                }
-
-                // Find the file to delete
-                const fileToDelete = category.files.find(f => {
-                    const fname = f.filename || f;
-                    return fname === filename;
+                // Call Cloud Function to delete the file
+                const response = await fetch(`${FUNCTIONS_URL}/deleteSound`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        categoryKey,
+                        filename
+                    })
                 });
 
-                // If file is stored in Firebase Storage, delete it
-                if (fileToDelete && fileToDelete.path && fileToDelete.path.startsWith('sounds/')) {
-                    try {
-                        const storageRef = storage.ref(fileToDelete.path);
-                        await storageRef.delete();
-                        console.log(`Deleted file from storage: ${fileToDelete.path}`);
-                    } catch (storageError) {
-                        console.warn('Could not delete from storage (may be on GitHub):', storageError);
-                        // Continue anyway - might be a GitHub-hosted file
-                    }
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Delete failed');
                 }
 
-                // Filter out the file from database
-                const updatedFiles = category.files.filter(f => {
-                    const fname = f.filename || f;
-                    return fname !== filename;
-                });
-
-                // Update Firebase Database
-                await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
-                await database.ref(`sounds/${categoryKey}/fileCount`).set(updatedFiles.length);
+                const result = await response.json();
 
                 showStatus(`✅ Deleted ${filename}`);
                 loadSounds(); // Reload the list
+
             } catch (error) {
                 console.error('Error deleting sound:', error);
                 showStatus('Error deleting sound: ' + error.message, true);

@@ -308,6 +308,15 @@
 
         .sound-info {
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .admin-audio {
+            width: 100%;
+            max-width: 400px;
+            height: 35px;
         }
 
         .sound-size {
@@ -565,10 +574,15 @@
                         if (category.files && category.files.length > 0) {
                             category.files.forEach((fileData) => {
                                 const filename = fileData.filename || fileData;
+                                const fileUrl = fileData.url || `${categoryKey}/${filename}`;
                                 html += `
                                     <div class="sound-item">
                                         <div class="sound-info">
                                             <strong>${filename}</strong>
+                                            <audio controls preload="none" class="admin-audio">
+                                                <source src="${fileUrl}" type="audio/mpeg">
+                                                Your browser does not support audio playback.
+                                            </audio>
                                         </div>
                                         <button class="btn btn-delete" onclick="deleteSound('${categoryKey}', '${filename}')">
                                             🗑️ Delete

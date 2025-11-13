@@ -323,6 +323,10 @@
             }
         }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 </head>
 <body>
     <div id="statusMessage" class="status-message">Saved!</div>
@@ -362,6 +366,21 @@
     </div>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1yMZIjtukkRNYAgki_hW68JcmQixkGaE",
+            authDomain: "wonderful-life-sound.firebaseapp.com",
+            databaseURL: "https://wonderful-life-sound-default-rtdb.firebaseio.com",
+            projectId: "wonderful-life-sound",
+            storageBucket: "wonderful-life-sound.firebasestorage.app",
+            messagingSenderId: "992667824102",
+            appId: "1:992667824102:web:dd883f2b4b95361cd7b027"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         // Sound categories data
         const soundData = {
             "01_breaking_glass": {
@@ -821,56 +840,75 @@
                 }
             });
 
-            localStorage.setItem('soundReviewProgress', JSON.stringify(progress));
-            showStatus('Progress saved!');
+            // Save to Firebase
+            database.ref('selections').set(progress)
+                .then(() => {
+                    showStatus('Progress saved to cloud!');
+                })
+                .catch((error) => {
+                    console.error('Save error:', error);
+                    showStatus('Error saving progress');
+                });
         }
 
-        // Load progress from localStorage
+        // Load progress from Firebase
         function loadProgress() {
-            const saved = localStorage.getItem('soundReviewProgress');
-            if (!saved) return;
+            database.ref('selections').once('value')
+                .then((snapshot) => {
+                    const progress = snapshot.val();
+                    if (!progress) return;
 
-            const progress = JSON.parse(saved);
+                    // Restore favorites
+                    if (progress.favorites) {
+                        progress.favorites.forEach(item => {
+                            const soundFile = document.querySelector(
+                                `.sound-file[data-category="${item.category}"][data-file="${item.file}"]`
+                            );
+                            if (soundFile) {
+                                const checkbox = soundFile.querySelector('.favorite-checkbox');
+                                checkbox.checked = true;
+                                soundFile.classList.add('selected');
+                            }
+                        });
+                    }
 
-            // Restore favorites
-            progress.favorites.forEach(item => {
-                const soundFile = document.querySelector(
-                    `.sound-file[data-category="${item.category}"][data-file="${item.file}"]`
-                );
-                if (soundFile) {
-                    const checkbox = soundFile.querySelector('.favorite-checkbox');
-                    checkbox.checked = true;
-                    soundFile.classList.add('selected');
-                }
-            });
+                    // Restore ratings
+                    if (progress.ratings) {
+                        Object.keys(progress.ratings).forEach(key => {
+                            const [category, file] = key.split('/');
+                            const soundFile = document.querySelector(
+                                `.sound-file[data-category="${category}"][data-file="${file}"]`
+                            );
+                            if (soundFile) {
+                                const rating = progress.ratings[key];
+                                const container = soundFile.querySelector('.rating-stars');
+                                const stars = container.querySelectorAll('.star');
 
-            // Restore ratings
-            Object.keys(progress.ratings).forEach(key => {
-                const [category, file] = key.split('/');
-                const soundFile = document.querySelector(
-                    `.sound-file[data-category="${category}"][data-file="${file}"]`
-                );
-                if (soundFile) {
-                    const rating = progress.ratings[key];
-                    const container = soundFile.querySelector('.rating-stars');
-                    const stars = container.querySelectorAll('.star');
+                                container.setAttribute('data-rating', rating);
+                                stars.forEach((star, index) => {
+                                    if (index < rating) {
+                                        star.classList.add('active');
+                                    }
+                                });
+                            }
+                        });
+                    }
 
-                    container.setAttribute('data-rating', rating);
-                    stars.forEach((star, index) => {
-                        if (index < rating) {
-                            star.classList.add('active');
-                        }
-                    });
-                }
-            });
+                    // Restore notes
+                    if (progress.notes) {
+                        Object.keys(progress.notes).forEach(category => {
+                            const textarea = document.getElementById(`${category}-notes`);
+                            if (textarea) {
+                                textarea.value = progress.notes[category];
+                            }
+                        });
+                    }
 
-            // Restore notes
-            Object.keys(progress.notes).forEach(category => {
-                const textarea = document.getElementById(`${category}-notes`);
-                if (textarea) {
-                    textarea.value = progress.notes[category];
-                }
-            });
+                    console.log('Progress loaded from Firebase');
+                })
+                .catch((error) => {
+                    console.error('Load error:', error);
+                });
         }
 
         // Export report
@@ -958,8 +996,15 @@
                 textarea.value = '';
             });
 
-            localStorage.removeItem('soundReviewProgress');
-            showStatus('All selections cleared!');
+            // Clear from Firebase
+            database.ref('selections').remove()
+                .then(() => {
+                    showStatus('All selections cleared from cloud!');
+                })
+                .catch((error) => {
+                    console.error('Clear error:', error);
+                    showStatus('Error clearing selections');
+                });
         }
 
         // Show status message

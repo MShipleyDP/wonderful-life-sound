@@ -43,7 +43,7 @@ This repository contains a complete sound effect and music library for the theat
 
 ### For Director - Sound Review
 
-1. **Open the review tool:** [Click here to open DIRECTOR_SOUND_REVIEW.html](https://mshipleydp.github.io/wonderful-life-sound/)
+1. **Open the review tool:** [Click here to open the interactive sound review tool](https://mshipleydp.github.io/wonderful-life-sound/)
 2. **Listen to sounds** - Click play on any audio file
 3. **Mark favorites** - Check boxes for sounds you want to use
 4. **Rate files** - Give 1-5 stars to show preferences
@@ -60,20 +60,20 @@ cd wonderful-life-sound
 
 # Open the review tool in your browser
 # Windows:
-start DIRECTOR_SOUND_REVIEW.html
+start index.html
 
 # Mac:
-open DIRECTOR_SOUND_REVIEW.html
+open index.html
 
 # Linux:
-xdg-open DIRECTOR_SOUND_REVIEW.html
+xdg-open index.html
 ```
 
 ## 📂 Repository Structure
 
 ```
 wonderful-life-sound/
-├── DIRECTOR_SOUND_REVIEW.html    # Interactive review interface
+├── index.html                     # Interactive review interface
 ├── 01_breaking_glass/            # Sound effect folders (01-25)
 ├── 02_bell_angel_wings/
 ├── 03_train_whistle/

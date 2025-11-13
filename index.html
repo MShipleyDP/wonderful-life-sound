@@ -444,14 +444,17 @@
                     <p style="color: #666; margin-bottom: 20px; font-style: italic;">${data.description}</p>
 
                     <div class="sound-files">
-                        ${data.files.map((file, index) => `
-                            <div class="sound-file" data-category="${key}" data-file="${file}">
+                        ${data.files.map((file, index) => {
+                            const filename = file.filename || file;
+                            const fileUrl = file.url || `${key}/${filename}`;
+                            return `
+                            <div class="sound-file" data-category="${key}" data-file="${filename}">
                                 <input type="checkbox" class="favorite-checkbox"
                                        id="${key}-${index}"
                                        onchange="toggleFavorite(this)">
-                                <label class="file-name" for="${key}-${index}">${file}</label>
+                                <label class="file-name" for="${key}-${index}">${filename}</label>
                                 <audio controls preload="none">
-                                    <source src="${key}/${file}" type="audio/mpeg">
+                                    <source src="${fileUrl}" type="audio/mpeg">
                                     Your browser does not support audio playback.
                                 </audio>
                                 <div class="rating-stars" data-rating="0">
@@ -460,7 +463,7 @@
                                     ).join('')}
                                 </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
 
                     <div class="notes-section">

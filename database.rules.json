@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "sounds": {
+      ".read": true,
+      ".write": false
+    },
+    "selections": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}

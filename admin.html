@@ -402,6 +402,25 @@
             </div>
 
             <div class="section">
+                <h2>Add New Sound</h2>
+                <p style="color: #7f8c8d; margin-bottom: 15px;">Add a sound file that's already uploaded to GitHub</p>
+                <div class="form-group">
+                    <label for="addCategory">Category:</label>
+                    <select id="addCategory" style="width: 300px;">
+                        <option value="">Loading categories...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addFilename">Filename (e.g., new_sound.mp3):</label>
+                    <input type="text" id="addFilename" placeholder="my_new_sound.mp3" style="width: 400px;">
+                </div>
+                <button class="btn btn-success" onclick="addSound()">➕ Add Sound</button>
+                <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 10px;">
+                    <strong>Note:</strong> Make sure the MP3 file is already uploaded to the category folder on GitHub.
+                </p>
+            </div>
+
+            <div class="section">
                 <h2>Current Sound Library</h2>
                 <div id="soundsContent" class="loading">
                     <p>Loading sounds...</p>
@@ -565,11 +584,99 @@
                     });
 
                     container.innerHTML = html;
+
+                    // Also populate the category dropdown
+                    populateCategoryDropdown(sounds);
                 })
                 .catch((error) => {
                     console.error('Error loading sounds:', error);
                     container.innerHTML = '<p style="color: red; text-align: center; padding: 40px;">Error loading sounds.</p>';
                 });
+        }
+
+        // Populate category dropdown for adding sounds
+        function populateCategoryDropdown(sounds) {
+            const dropdown = document.getElementById('addCategory');
+            if (!dropdown) return;
+
+            const categories = Object.keys(sounds).sort((a, b) => (sounds[a].order || 0) - (sounds[b].order || 0));
+
+            dropdown.innerHTML = '<option value="">-- Select Category --</option>';
+            categories.forEach(categoryKey => {
+                const option = document.createElement('option');
+                option.value = categoryKey;
+                option.textContent = sounds[categoryKey].title;
+                dropdown.appendChild(option);
+            });
+        }
+
+        // Add sound to Firebase database
+        async function addSound() {
+            const categoryKey = document.getElementById('addCategory').value;
+            const filename = document.getElementById('addFilename').value.trim();
+
+            if (!categoryKey) {
+                showStatus('Please select a category', true);
+                return;
+            }
+
+            if (!filename) {
+                showStatus('Please enter a filename', true);
+                return;
+            }
+
+            if (!filename.endsWith('.mp3')) {
+                showStatus('Filename must end with .mp3', true);
+                return;
+            }
+
+            try {
+                // Get current category data
+                const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
+                const category = snapshot.val();
+
+                if (!category) {
+                    showStatus('Category not found', true);
+                    return;
+                }
+
+                // Check if file already exists
+                const existingFiles = category.files || [];
+                const fileExists = existingFiles.some(f => {
+                    const fname = f.filename || f;
+                    return fname === filename;
+                });
+
+                if (fileExists) {
+                    showStatus('File already exists in this category', true);
+                    return;
+                }
+
+                // Add the new file
+                const GITHUB_PAGES_URL = 'https://mshipleydp.github.io/wonderful-life-sound';
+                const newFile = {
+                    filename: filename,
+                    url: `${GITHUB_PAGES_URL}/${categoryKey}/${filename}`,
+                    path: `${categoryKey}/${filename}`
+                };
+
+                const updatedFiles = [...existingFiles, newFile];
+
+                // Update Firebase
+                await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
+                await database.ref(`sounds/${categoryKey}/fileCount`).set(updatedFiles.length);
+
+                showStatus(`Added ${filename} to ${category.title}`);
+
+                // Clear form
+                document.getElementById('addFilename').value = '';
+
+                // Reload the list
+                loadSounds();
+            } catch (error) {
+                console.error('Error adding sound:', error);
+                showStatus('Error adding sound', true);
+            }
         }
 
         // Toggle category visibility

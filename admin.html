@@ -366,6 +366,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 </head>
 <body>
     <div id="statusMessage" class="status-message"></div>
@@ -411,22 +412,29 @@
             </div>
 
             <div class="section">
-                <h2>Add New Sound</h2>
-                <p style="color: #7f8c8d; margin-bottom: 15px;">Add a sound file that's already uploaded to GitHub</p>
+                <h2>Upload New Sound</h2>
+                <p style="color: #7f8c8d; margin-bottom: 15px;">Upload an MP3 file directly to Firebase Storage</p>
                 <div class="form-group">
-                    <label for="addCategory">Category:</label>
-                    <select id="addCategory" style="width: 300px;">
+                    <label for="uploadCategory">Category:</label>
+                    <select id="uploadCategory" style="width: 300px;">
                         <option value="">Loading categories...</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="addFilename">Filename (e.g., new_sound.mp3):</label>
-                    <input type="text" id="addFilename" placeholder="my_new_sound.mp3" style="width: 400px;">
+                    <label for="uploadFile">Select MP3 File:</label>
+                    <input type="file" id="uploadFile" accept="audio/mpeg,.mp3" style="width: 400px;">
                 </div>
-                <button class="btn btn-success" onclick="addSound()">➕ Add Sound</button>
-                <p style="font-size: 0.9em; color: #7f8c8d; margin-top: 10px;">
-                    <strong>Note:</strong> Make sure the MP3 file is already uploaded to the category folder on GitHub.
-                </p>
+                <div class="form-group">
+                    <label for="uploadFilename">Filename (optional - leave blank to use original):</label>
+                    <input type="text" id="uploadFilename" placeholder="optional_custom_name.mp3" style="width: 400px;">
+                </div>
+                <button class="btn btn-success" onclick="uploadSound()">⬆️ Upload Sound</button>
+                <div id="uploadProgress" style="display: none; margin-top: 10px;">
+                    <div style="background: #ecf0f1; border-radius: 5px; height: 20px; overflow: hidden;">
+                        <div id="uploadProgressBar" style="background: #27ae60; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <p id="uploadStatus" style="margin-top: 5px; color: #7f8c8d;"></p>
+                </div>
             </div>
 
             <div class="section">
@@ -462,6 +470,7 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const storage = firebase.storage();
 
         // Sound categories metadata (same as main site)
         const GITHUB_PAGES_URL = 'https://mshipleydp.github.io/wonderful-life-sound';
@@ -610,18 +619,19 @@
 
         // Populate category dropdown for adding sounds
         function populateCategoryDropdown(sounds) {
-            const dropdown = document.getElementById('addCategory');
-            if (!dropdown) return;
-
             const categories = Object.keys(sounds).sort((a, b) => (sounds[a].order || 0) - (sounds[b].order || 0));
 
-            dropdown.innerHTML = '<option value="">-- Select Category --</option>';
-            categories.forEach(categoryKey => {
-                const option = document.createElement('option');
-                option.value = categoryKey;
-                option.textContent = sounds[categoryKey].title;
-                dropdown.appendChild(option);
-            });
+            // Populate uploadCategory dropdown
+            const uploadDropdown = document.getElementById('uploadCategory');
+            if (uploadDropdown) {
+                uploadDropdown.innerHTML = '<option value="">-- Select Category --</option>';
+                categories.forEach(categoryKey => {
+                    const option = document.createElement('option');
+                    option.value = categoryKey;
+                    option.textContent = sounds[categoryKey].title;
+                    uploadDropdown.appendChild(option);
+                });
+            }
         }
 
         // Add sound to Firebase database
@@ -693,6 +703,117 @@
             }
         }
 
+        // Upload sound file to Firebase Storage
+        async function uploadSound() {
+            const categoryKey = document.getElementById('uploadCategory').value;
+            const fileInput = document.getElementById('uploadFile');
+            const customFilename = document.getElementById('uploadFilename').value.trim();
+            const file = fileInput.files[0];
+
+            // Validation
+            if (!categoryKey) {
+                showStatus('Please select a category', true);
+                return;
+            }
+
+            if (!file) {
+                showStatus('Please select an MP3 file', true);
+                return;
+            }
+
+            if (!file.type.includes('audio') && !file.name.endsWith('.mp3')) {
+                showStatus('Please select an MP3 audio file', true);
+                return;
+            }
+
+            // Determine filename
+            let filename = customFilename || file.name;
+            if (!filename.endsWith('.mp3')) {
+                filename += '.mp3';
+            }
+
+            // Show progress
+            document.getElementById('uploadProgress').style.display = 'block';
+            document.getElementById('uploadProgressBar').style.width = '0%';
+            document.getElementById('uploadStatus').textContent = 'Preparing upload...';
+
+            try {
+                // Get current category data
+                const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
+                const category = snapshot.val();
+
+                if (!category) {
+                    showStatus('Category not found', true);
+                    document.getElementById('uploadProgress').style.display = 'none';
+                    return;
+                }
+
+                // Check if file already exists
+                const existingFiles = category.files || [];
+                const fileExists = existingFiles.some(f => {
+                    const fname = f.filename || f;
+                    return fname === filename;
+                });
+
+                if (fileExists) {
+                    showStatus('File already exists in this category', true);
+                    document.getElementById('uploadProgress').style.display = 'none';
+                    return;
+                }
+
+                // Upload to Firebase Storage
+                const storagePath = `sounds/${categoryKey}/${filename}`;
+                const storageRef = storage.ref(storagePath);
+                const uploadTask = storageRef.put(file);
+
+                // Monitor upload progress
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        document.getElementById('uploadProgressBar').style.width = progress + '%';
+                        document.getElementById('uploadStatus').textContent =
+                            `Uploading... ${Math.round(progress)}%`;
+                    },
+                    (error) => {
+                        console.error('Upload error:', error);
+                        showStatus('Upload failed: ' + error.message, true);
+                        document.getElementById('uploadProgress').style.display = 'none';
+                    },
+                    async () => {
+                        // Upload complete, get download URL
+                        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+
+                        // Add to database
+                        const newFile = {
+                            filename: filename,
+                            url: downloadURL,
+                            path: storagePath
+                        };
+
+                        const updatedFiles = [...existingFiles, newFile];
+
+                        await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
+                        await database.ref(`sounds/${categoryKey}/fileCount`).set(updatedFiles.length);
+
+                        showStatus(`✅ Uploaded ${filename} to ${category.title}`);
+
+                        // Clear form
+                        fileInput.value = '';
+                        document.getElementById('uploadFilename').value = '';
+                        document.getElementById('uploadProgress').style.display = 'none';
+
+                        // Reload the list
+                        loadSounds();
+                    }
+                );
+
+            } catch (error) {
+                console.error('Error uploading sound:', error);
+                showStatus('Error uploading sound: ' + error.message, true);
+                document.getElementById('uploadProgress').style.display = 'none';
+            }
+        }
+
         // Toggle category visibility
         function toggleCategory(categoryKey) {
             const content = document.getElementById(`cat-${categoryKey}`);
@@ -705,7 +826,7 @@
 
         // Delete sound from Firebase database
         async function deleteSound(categoryKey, filename) {
-            if (!confirm(`Delete "${filename}" from ${categoryKey}?\n\nThis will remove it from the database, but you'll need to delete the actual MP3 file from GitHub manually.`)) {
+            if (!confirm(`Delete "${filename}" from ${categoryKey}?\n\nThis will permanently delete the file and remove it from the database.`)) {
                 return;
             }
 
@@ -719,21 +840,39 @@
                     return;
                 }
 
-                // Filter out the file
+                // Find the file to delete
+                const fileToDelete = category.files.find(f => {
+                    const fname = f.filename || f;
+                    return fname === filename;
+                });
+
+                // If file is stored in Firebase Storage, delete it
+                if (fileToDelete && fileToDelete.path && fileToDelete.path.startsWith('sounds/')) {
+                    try {
+                        const storageRef = storage.ref(fileToDelete.path);
+                        await storageRef.delete();
+                        console.log(`Deleted file from storage: ${fileToDelete.path}`);
+                    } catch (storageError) {
+                        console.warn('Could not delete from storage (may be on GitHub):', storageError);
+                        // Continue anyway - might be a GitHub-hosted file
+                    }
+                }
+
+                // Filter out the file from database
                 const updatedFiles = category.files.filter(f => {
                     const fname = f.filename || f;
                     return fname !== filename;
                 });
 
-                // Update Firebase
+                // Update Firebase Database
                 await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
                 await database.ref(`sounds/${categoryKey}/fileCount`).set(updatedFiles.length);
 
-                showStatus(`Deleted ${filename}`);
+                showStatus(`✅ Deleted ${filename}`);
                 loadSounds(); // Reload the list
             } catch (error) {
                 console.error('Error deleting sound:', error);
-                showStatus('Error deleting sound', true);
+                showStatus('Error deleting sound: ' + error.message, true);
             }
         }
 

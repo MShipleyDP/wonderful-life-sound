@@ -2,9 +2,12 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     // Allow anyone to read sound files
-    match /sounds/{allPaths=**} {
+    // Allow anyone to write (upload/delete) sound files
+    // Note: In production, you may want to add authentication
+    match /sounds/{category}/{filename} {
       allow read: if true;
-      allow write: if false; // Only admins can write (we'll use admin SDK)
+      allow write: if true;
+      allow delete: if true;
     }
   }
 }

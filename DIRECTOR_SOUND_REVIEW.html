@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>It's A Wonderful Life - Sound Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .instructions {
+            background: #f0f7ff;
+            border-left: 5px solid #2a5298;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+        }
+
+        .instructions h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #34495e;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background: #4a6278;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .category {
+            margin-bottom: 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            background: #fafafa;
+            scroll-margin-top: 80px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .category-title {
+            color: #1e3c72;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .category-count {
+            background: #2a5298;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .sound-file {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 30px 1fr auto 80px;
+            gap: 15px;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .sound-file:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .sound-file.selected {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .favorite-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #333;
+            word-break: break-all;
+        }
+
+        audio {
+            width: 300px;
+            height: 35px;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+        }
+
+        .notes-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #ccc;
+        }
+
+        .notes-section label {
+            display: block;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 20px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+        }
+
+        .btn-secondary {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #0b7dda;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33,150,243,0.3);
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244,67,54,0.3);
+        }
+
+        .status-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #4caf50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .status-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            nav, .action-buttons {
+                display: none;
+            }
+
+            audio {
+                display: none;
+            }
+
+            .favorite-checkbox {
+                -webkit-appearance: checkbox;
+            }
+
+            .sound-file {
+                break-inside: avoid;
+            }
+
+            .category {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="statusMessage" class="status-message">Saved!</div>
+
+    <div class="container">
+        <header>
+            <h1>🎭 It's A Wonderful Life 🔔</h1>
+            <p>Sound Effect Review & Selection</p>
+        </header>
+
+        <div class="instructions">
+            <h3>📋 Instructions for Director:</h3>
+            <ul>
+                <li>✅ <strong>Check the box</strong> next to sounds you want to use</li>
+                <li>⭐ <strong>Rate each file</strong> with stars (1-5) to show preference</li>
+                <li>🎵 <strong>Click play</strong> on each audio player to preview the sound</li>
+                <li>📝 <strong>Add notes</strong> in the text area below each category (cues, timing, volume, etc.)</li>
+                <li>💾 <strong>Save Progress</strong> button saves your selections and notes to your browser</li>
+                <li>📄 <strong>Export Report</strong> button creates a printable summary</li>
+                <li>🔄 Your progress auto-saves every 30 seconds</li>
+            </ul>
+        </div>
+
+        <nav id="categoryNav">
+            <!-- Navigation will be generated by JavaScript -->
+        </nav>
+
+        <div class="content" id="soundCategories">
+            <!-- Categories will be generated by JavaScript -->
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="saveProgress()">💾 Save Progress</button>
+            <button class="btn btn-secondary" onclick="exportReport()">📄 Export Report</button>
+            <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All Selections</button>
+        </div>
+    </div>
+
+    <script>
+        // Sound categories data
+        const soundData = {
+            "01_breaking_glass": {
+                title: "Breaking Glass",
+                directorRequest: "Breaking glass",
+                description: "Multiple scenes with glass breaking",
+                files: [
+                    "01_glass_breaking.mp3",
+                    "02_glass_shattering.mp3",
+                    "03_broken_glass.mp3",
+                    "04_object_breaking.mp3",
+                    "05_plate_smashing.mp3"
+                ]
+            },
+            "02_bell_angel_wings": {
+                title: "Bell (Angel Wings) 🔔",
+                directorRequest: "Bell (for every time a bell rings and angel gets his wings)",
+                description: "KEY MOTIF - 'Every time a bell rings, an angel gets his wings'",
+                files: [
+                    "01_small_bell_ring.mp3",
+                    "02_small_bell_ringing.mp3",
+                    "03_bell_ring_clear.mp3",
+                    "04_bell_ringing_bright.mp3",
+                    "05_bell_ringing.mp3",
+                    "06_sleigh_bells_christmas.mp3",
+                    "07_hand_bell_short_ring.mp3",
+                    "08_christmas_bells_box.mp3",
+                    "09_church_bells_chiming.mp3",
+                    "10_small_church_bell.mp3"
+                ]
+            },
+            "03_train_whistle": {
+                title: "Train Whistle",
+                directorRequest: "Train whistle",
+                description: "George's dreams of travel",
+                files: [
+                    "01_steam_train_pass_by_whistle.mp3",
+                    "02_steam_train_whistle_depart.mp3",
+                    "03_distant_train_whistle.mp3",
+                    "04_tourist_train_chugging.mp3",
+                    "05_steam_train_whistle_high_pitch.mp3"
+                ]
+            },
+            "04_fireworks": {
+                title: "Fireworks",
+                directorRequest: "Fireworks",
+                description: "Celebration scenes",
+                files: [
+                    "01_fireworks_celebration.mp3",
+                    "02_realistic_fireworks_boom_and_crackle.mp3",
+                    "03_festive_fireworks_celebration.mp3",
+                    "04_fireworks_burst.mp3"
+                ]
+            },
+            "05_ice_cracking": {
+                title: "Ice Cracking",
+                directorRequest: "Ice cracking",
+                description: "Harry falls through ice scene",
+                files: [
+                    "01_ice_cracking.mp3",
+                    "02_ice_breaking.mp3",
+                    "03_cracking_ice.mp3",
+                    "04_ice_shattering.mp3"
+                ]
+            },
+            "06_1920s_music": {
+                title: "1920s Music",
+                directorRequest: "1920s music",
+                description: "Period appropriate background music",
+                files: [
+                    "01_1920s_song_jazz_orchestra.mp3",
+                    "02_1920s_song_orangefreesounds.mp3",
+                    "03_bennie_moten_kater_st_rag.mp3",
+                    "04_bennie_moten_south_1924.mp3",
+                    "05_bucktown_5_hot_mittens.mp3"
+                ]
+            },
+            "07_phone_ringing": {
+                title: "Phone Ringing ☎️",
+                directorRequest: "Phone ringing",
+                description: "Multiple phone calls throughout (Sam Wainwright, etc.)",
+                files: [
+                    "01_old_phone_ringing.mp3",
+                    "02_telephone_ring_single.mp3",
+                    "03_telephone_ring_four_times.mp3",
+                    "04_telephone_ring_five_times.mp3",
+                    "05_rotary_phone_ring.mp3",
+                    "06_vintage_phone_ring.mp3"
+                ]
+            },
+            "08_city_noises": {
+                title: "City Noises",
+                directorRequest: "General city noises (cars honking, etc)",
+                description: "Bedford Falls ambience (cars honking, traffic, etc.)",
+                files: [
+                    "01_city_traffic_sounds.mp3",
+                    "02_street_noise_ambience.mp3",
+                    "03_traffic_ambience.mp3",
+                    "04_port_town_ambience.mp3",
+                    "05_empty_city_quiet.mp3"
+                ]
+            },
+            "09_piano_christmas_music": {
+                title: "Piano Christmas Music 🎹",
+                directorRequest: "Piano Christmas Music for intermission, before/after show",
+                description: "Intermission, pre/post show",
+                files: [
+                    "01_joy_to_the_world_piano.mp3",
+                    "02_jingle_bells_piano.mp3",
+                    "03_traditional_christmas_piano_bells.mp3",
+                    "04_instrumental_christmas_upbeat.mp3",
+                    "05_traditional_christmas_festive.mp3",
+                    "06_christmas_intro_song.mp3"
+                ]
+            },
+            "10_angelic_heavenly_sound": {
+                title: "Angelic/Heavenly Sound 👼",
+                directorRequest: "Angelic heavenly sound (for when the angels appear)",
+                description: "Angel appearances, opening scene",
+                files: [
+                    "01_angels_singing.mp3",
+                    "02_heavenly_choir.mp3",
+                    "03_angelic_choir_ahh.mp3",
+                    "04_heavenly_angelic_vocal_ahh.mp3",
+                    "05_magical_ethereal_harp_arpeggio.mp3",
+                    "06_celestial_chimes.mp3"
+                ]
+            },
+            "11_car_taxi_sounds": {
+                title: "Car/Taxi Sounds 🚕",
+                directorRequest: "Car sounds for Ernie's taxi",
+                description: "Ernie's taxi scenes",
+                files: [
+                    "01_car_horn.mp3",
+                    "02_car_start_engine.mp3",
+                    "03_old_car_horn.mp3",
+                    "04_car_door_close.mp3",
+                    "05_engine_running.mp3",
+                    "06_car_driving_away.mp3"
+                ]
+            },
+            "12_1920s_police_sirens": {
+                title: "1920s Police Sirens 🚨",
+                directorRequest: "1920s police sirens",
+                description: "Bert the cop",
+                files: [
+                    "01_siren_sound.mp3",
+                    "02_klaxon_vintage.mp3",
+                    "03_air_raid_siren.mp3",
+                    "04_fire_engine_wail.mp3"
+                ]
+            },
+            "13_crashing_garbage_cans": {
+                title: "Crashing Garbage Cans",
+                directorRequest: "Crashing garbage cans",
+                description: "George's desperation scene",
+                files: [
+                    "01_metal_crash.mp3",
+                    "02_falling_garbage_pile.mp3",
+                    "03_metal_junk_crash.mp3",
+                    "04_junk_crash.mp3"
+                ]
+            },
+            "14_party_graduation_sounds": {
+                title: "Party/Graduation Sounds 🎉",
+                directorRequest: "Party sounds (graduation party in the 1920s)",
+                description: "1920s graduation party (Charleston dance)",
+                files: [
+                    "01_crowd_cheering.mp3",
+                    "02_people_talking_party.mp3",
+                    "03_happy_celebration_music.mp3",
+                    "04_charleston_dance_1920s.mp3",
+                    "05_charleston_foxtrot_1925.mp3",
+                    "06_charleston_rag_eubie_blake.mp3"
+                ]
+            },
+            "15_wedding_march_cheers": {
+                title: "Wedding March/Cheers 💒",
+                directorRequest: "Wedding march music/cheers",
+                description: "George & Mary's impromptu wedding",
+                files: [
+                    "01_applause_small_group.mp3",
+                    "02_applause_people_clapping.mp3",
+                    "03_wedding_celebration.mp3"
+                ]
+            },
+            "16_camera_snapping": {
+                title: "Camera Snapping 📷",
+                directorRequest: "Camera snapping sound",
+                description: "Photography moments",
+                files: [
+                    "01_camera_shutter.mp3",
+                    "02_old_style_photo_camera.mp3",
+                    "03_vintage_camera_winding.mp3",
+                    "04_camera_shutter_classic.mp3"
+                ]
+            },
+            "17_stars_and_stripes_forever": {
+                title: "Stars & Stripes Forever 🇺🇸",
+                directorRequest: "Stars and Stripes Forever music",
+                description: "Harry's war hero return - patriotic celebration",
+                files: [
+                    "01_trumpet_reveille.mp3",
+                    "stars_and_stripes_forever_usmc_band.mp3",
+                    "anchors_aweigh_us_navy_band.mp3",
+                    "04_semper_fidelis_usmc_band.mp3"
+                ]
+            },
+            "18_war_plane_sounds": {
+                title: "War Plane Sounds ✈️",
+                directorRequest: "War plane sounds",
+                description: "WWII references",
+                files: [
+                    "01_propeller_plane.mp3",
+                    "02_vintage_biplane_flyover.mp3",
+                    "03_stuka_dive_bomber_siren.mp3",
+                    "04_propeller_plane_low_overhead.mp3"
+                ]
+            },
+            "19_splashing_water": {
+                title: "Splashing Water 💧",
+                directorRequest: "Splashing water",
+                description: "Bridge/river scenes (Clarence jumps in)",
+                files: [
+                    "01_big_water_splash.mp3",
+                    "02_water_splashing.mp3",
+                    "03_small_water_splash.mp3",
+                    "04_small_rock_water_splash.mp3",
+                    "05_small_object_splash.mp3",
+                    "06_calming_river_ambient.mp3"
+                ]
+            },
+            "20_italian_music_bar_sounds": {
+                title: "Italian Music/Bar Sounds 🍷",
+                directorRequest: "Italian Music/Bar sounds",
+                description: "Martini's bar - warm, friendly atmosphere",
+                files: [
+                    "01_electronic_soft_jazz.mp3",
+                    "02_warm_ambient_music.mp3",
+                    "03_people_talking_ambience.mp3",
+                    "04_thanksgiving_dinner_ambience.mp3",
+                    "05_glass_clinking.mp3"
+                ]
+            },
+            "21_reality_shift_transition": {
+                title: "Reality Shift/Transition 🌀",
+                directorRequest: "Some kind of sound to indicate the change to George never having been born",
+                description: "George never been born - otherworldly effect",
+                files: [
+                    "01_whoosh_echo.mp3",
+                    "02_sci_fi_dimensional_energy_whoosh.mp3",
+                    "03_futuristic_deep_sci_fi_whoosh.mp3",
+                    "04_reverse_whoosh_horror.mp3",
+                    "05_intense_deep_rumbling_whoosh.mp3"
+                ]
+            },
+            "22_jazzy_bar_music": {
+                title: "Jazzy Bar Music 🎷",
+                directorRequest: "Jazzy bar music and sounds",
+                description: "Pottersville bar - dark, seedy atmosphere",
+                files: [
+                    "01_dramatic_noir_music.mp3",
+                    "02_suspense_tense_music.mp3",
+                    "03_dark_tense_underscore.mp3",
+                    "04_electro_blues_lounge.mp3",
+                    "05_jazz_brunch_incompetech.mp3",
+                    "06_lounge_bar_orangefreesounds.mp3",
+                    "07_teller_of_tales_incompetech.mp3",
+                    "08_the_show_must_be_go_incompetech.mp3",
+                    "09_prelude_and_action_incompetech.mp3",
+                    "10_sneaky_snitch_incompetech.mp3",
+                    "11_backbay_lounge_incompetech.mp3"
+                ]
+            },
+            "23_drunken_city_sounds": {
+                title: "Drunken City Sounds 🍺",
+                directorRequest: "Drunken city sounds",
+                description: "Pottersville streets - rough, dangerous atmosphere",
+                files: [
+                    "01_crowd_noise_bar.mp3",
+                    "02_angry_crowd_yelling_booing.mp3",
+                    "03_chaotic_street_protest.mp3",
+                    "04_crowd_shouting_panic.mp3",
+                    "05_waterfront_brawl_riot.mp3",
+                    "06_rowdy_crowd_vintage.mp3",
+                    "07_angry_crowd_shouting.mp3"
+                ]
+            },
+            "24_somber_cemetery_music": {
+                title: "Somber Cemetery Music ⚰️",
+                directorRequest: "Somber, eerie music for a cemetery scene",
+                description: "Cemetery scene - eerie, melancholy mood",
+                files: [
+                    "01_sad_music.mp3",
+                    "02_melancholy_piano_music.mp3",
+                    "03_dark_ambient_background.mp3",
+                    "04_haunting_piano_melody.mp3",
+                    "05_creepy_atmospheric_music.mp3",
+                    "06_scary_wind_drone_ambience.mp3"
+                ]
+            },
+            "25_time_slowing_effect": {
+                title: "Time Slowing Effect ⏰",
+                directorRequest: "Joseph slows down time so some kind of sound effect for when time is slowed",
+                description: "Joseph slows down time",
+                files: [
+                    "01_slow_motion_effect.mp3",
+                    "02_time_freeze.mp3",
+                    "03_time_stop.mp3",
+                    "04_rewind.mp3",
+                    "05_reverse_clock_ticking.mp3",
+                    "06_reverse_swoosh.mp3"
+                ]
+            }
+        };
+
+        // Initialize page
+        function init() {
+            generateNavigation();
+            generateCategories();
+            loadProgress();
+
+            // Auto-save every 30 seconds
+            setInterval(saveProgress, 30000);
+        }
+
+        // Generate navigation
+        function generateNavigation() {
+            const nav = document.getElementById('categoryNav');
+            Object.keys(soundData).forEach(key => {
+                const link = document.createElement('a');
+                link.href = `#${key}`;
+                link.textContent = soundData[key].title.replace(/[🔔☎️🎹👼🚕🚨🎉💒📷🇺🇸✈️💧🍷🌀🎷🍺⚰️⏰]/g, '').trim();
+                nav.appendChild(link);
+            });
+        }
+
+        // Generate category sections
+        function generateCategories() {
+            const container = document.getElementById('soundCategories');
+
+            Object.keys(soundData).forEach(key => {
+                const data = soundData[key];
+                const section = document.createElement('div');
+                section.className = 'category';
+                section.id = key;
+
+                section.innerHTML = `
+                    <div class="category-header">
+                        <h2 class="category-title">${data.title}</h2>
+                        <span class="category-count">${data.files.length} files</span>
+                    </div>
+                    <p style="color: #2a5298; margin-bottom: 5px; font-weight: 600;">Director's Request: "${data.directorRequest}"</p>
+                    <p style="color: #666; margin-bottom: 20px; font-style: italic;">${data.description}</p>
+
+                    <div class="sound-files">
+                        ${data.files.map((file, index) => `
+                            <div class="sound-file" data-category="${key}" data-file="${file}">
+                                <input type="checkbox" class="favorite-checkbox"
+                                       id="${key}-${index}"
+                                       onchange="toggleFavorite(this)">
+                                <label class="file-name" for="${key}-${index}">${file}</label>
+                                <audio controls preload="none">
+                                    <source src="${key}/${file}" type="audio/mpeg">
+                                    Your browser does not support audio playback.
+                                </audio>
+                                <div class="rating-stars" data-rating="0">
+                                    ${[1,2,3,4,5].map(star =>
+                                        `<span class="star" onclick="setRating(this, ${star})" data-star="${star}">★</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="notes-section">
+                        <label for="${key}-notes">Director's Notes (cues, timing, volume, preferences):</label>
+                        <textarea class="notes-textarea"
+                                  id="${key}-notes"
+                                  placeholder="Add your notes here: When to use this sound, specific cues, volume levels, layering instructions, etc."
+                                  oninput="autoSave()"></textarea>
+                    </div>
+                `;
+
+                container.appendChild(section);
+            });
+        }
+
+        // Toggle favorite
+        function toggleFavorite(checkbox) {
+            const soundFile = checkbox.closest('.sound-file');
+            if (checkbox.checked) {
+                soundFile.classList.add('selected');
+            } else {
+                soundFile.classList.remove('selected');
+            }
+            autoSave();
+        }
+
+        // Set rating
+        function setRating(starElement, rating) {
+            const container = starElement.closest('.rating-stars');
+            const stars = container.querySelectorAll('.star');
+
+            container.setAttribute('data-rating', rating);
+
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+
+            autoSave();
+        }
+
+        // Auto-save
+        let autoSaveTimeout;
+        function autoSave() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(saveProgress, 1000);
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const progress = {
+                favorites: [],
+                ratings: {},
+                notes: {}
+            };
+
+            // Save favorites
+            document.querySelectorAll('.favorite-checkbox:checked').forEach(checkbox => {
+                const soundFile = checkbox.closest('.sound-file');
+                progress.favorites.push({
+                    category: soundFile.dataset.category,
+                    file: soundFile.dataset.file
+                });
+            });
+
+            // Save ratings
+            document.querySelectorAll('.rating-stars').forEach(container => {
+                const rating = container.getAttribute('data-rating');
+                const soundFile = container.closest('.sound-file');
+                if (rating > 0) {
+                    const key = `${soundFile.dataset.category}/${soundFile.dataset.file}`;
+                    progress.ratings[key] = rating;
+                }
+            });
+
+            // Save notes
+            document.querySelectorAll('.notes-textarea').forEach(textarea => {
+                if (textarea.value.trim()) {
+                    const category = textarea.id.replace('-notes', '');
+                    progress.notes[category] = textarea.value;
+                }
+            });
+
+            localStorage.setItem('soundReviewProgress', JSON.stringify(progress));
+            showStatus('Progress saved!');
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('soundReviewProgress');
+            if (!saved) return;
+
+            const progress = JSON.parse(saved);
+
+            // Restore favorites
+            progress.favorites.forEach(item => {
+                const soundFile = document.querySelector(
+                    `.sound-file[data-category="${item.category}"][data-file="${item.file}"]`
+                );
+                if (soundFile) {
+                    const checkbox = soundFile.querySelector('.favorite-checkbox');
+                    checkbox.checked = true;
+                    soundFile.classList.add('selected');
+                }
+            });
+
+            // Restore ratings
+            Object.keys(progress.ratings).forEach(key => {
+                const [category, file] = key.split('/');
+                const soundFile = document.querySelector(
+                    `.sound-file[data-category="${category}"][data-file="${file}"]`
+                );
+                if (soundFile) {
+                    const rating = progress.ratings[key];
+                    const container = soundFile.querySelector('.rating-stars');
+                    const stars = container.querySelectorAll('.star');
+
+                    container.setAttribute('data-rating', rating);
+                    stars.forEach((star, index) => {
+                        if (index < rating) {
+                            star.classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            // Restore notes
+            Object.keys(progress.notes).forEach(category => {
+                const textarea = document.getElementById(`${category}-notes`);
+                if (textarea) {
+                    textarea.value = progress.notes[category];
+                }
+            });
+        }
+
+        // Export report
+        function exportReport() {
+            let report = '# IT\'S A WONDERFUL LIFE - SOUND SELECTION REPORT\n\n';
+            report += `Generated: ${new Date().toLocaleString()}\n\n`;
+            report += '---\n\n';
+
+            Object.keys(soundData).forEach(key => {
+                const data = soundData[key];
+                report += `## ${data.title}\n`;
+                report += `**Director's Original Request:** "${data.directorRequest}"\n`;
+                report += `**Description:** ${data.description}\n\n`;
+
+                // Get selected files
+                const selected = [];
+                document.querySelectorAll(`.sound-file[data-category="${key}"]`).forEach(soundFile => {
+                    const checkbox = soundFile.querySelector('.favorite-checkbox');
+                    const ratingContainer = soundFile.querySelector('.rating-stars');
+                    const rating = ratingContainer.getAttribute('data-rating');
+                    const fileName = soundFile.dataset.file;
+
+                    if (checkbox.checked || rating > 0) {
+                        let line = `- ${fileName}`;
+                        if (checkbox.checked) line += ' ✅';
+                        if (rating > 0) line += ` (${rating}★)`;
+                        selected.push(line);
+                    }
+                });
+
+                if (selected.length > 0) {
+                    report += '**Selected Files:**\n';
+                    report += selected.join('\n') + '\n\n';
+                } else {
+                    report += '*No files selected*\n\n';
+                }
+
+                // Get notes
+                const textarea = document.getElementById(`${key}-notes`);
+                if (textarea && textarea.value.trim()) {
+                    report += '**Director\'s Notes:**\n';
+                    report += textarea.value + '\n\n';
+                }
+
+                report += '---\n\n';
+            });
+
+            // Create downloadable file
+            const blob = new Blob([report], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Sound_Selection_Report.md';
+            a.click();
+
+            showStatus('Report exported!');
+        }
+
+        // Clear all selections
+        function clearAll() {
+            if (!confirm('Are you sure you want to clear ALL selections and notes? This cannot be undone.')) {
+                return;
+            }
+
+            // Clear checkboxes
+            document.querySelectorAll('.favorite-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear selected class
+            document.querySelectorAll('.sound-file.selected').forEach(sf => {
+                sf.classList.remove('selected');
+            });
+
+            // Clear ratings
+            document.querySelectorAll('.rating-stars').forEach(container => {
+                container.setAttribute('data-rating', '0');
+                container.querySelectorAll('.star').forEach(star => {
+                    star.classList.remove('active');
+                });
+            });
+
+            // Clear notes
+            document.querySelectorAll('.notes-textarea').forEach(textarea => {
+                textarea.value = '';
+            });
+
+            localStorage.removeItem('soundReviewProgress');
+            showStatus('All selections cleared!');
+        }
+
+        // Show status message
+        function showStatus(message) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.classList.add('show');
+
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 2000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

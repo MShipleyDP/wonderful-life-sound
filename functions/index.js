@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
-const Busboy = require('busboy');
+const busboy = require('busboy');
 const https = require('https');
 
 admin.initializeApp();
@@ -16,19 +16,19 @@ exports.uploadSound = functions.https.onRequest((req, res) => {
       return res.status(405).send('Method Not Allowed');
     }
 
-    const busboy = Busboy({ headers: req.headers });
+    const bb = busboy({ headers: req.headers });
     let categoryKey = '';
     let customFilename = '';
     let fileBuffer = null;
     let fileContentType = '';
     let originalFilename = '';
 
-    busboy.on('field', (fieldname, val) => {
+    bb.on('field', (fieldname, val) => {
       if (fieldname === 'category') categoryKey = val;
       if (fieldname === 'customFilename') customFilename = val;
     });
 
-    busboy.on('file', (fieldname, file, info) => {
+    bb.on('file', (fieldname, file, info) => {
       const { filename, mimeType } = info;
       originalFilename = filename;
       fileContentType = mimeType;
@@ -40,7 +40,7 @@ exports.uploadSound = functions.https.onRequest((req, res) => {
       });
     });
 
-    busboy.on('finish', async () => {
+    bb.on('finish', async () => {
       try {
         if (!categoryKey || !fileBuffer) {
           return res.status(400).json({ error: 'Missing category or file' });
@@ -105,7 +105,7 @@ exports.uploadSound = functions.https.onRequest((req, res) => {
       }
     });
 
-    busboy.end(req.rawBody);
+    bb.end(req.rawBody);
   });
 });
 

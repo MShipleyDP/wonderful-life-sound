@@ -437,6 +437,35 @@
                 </div>
             </div>
 
+            <div class="section" style="background: #fff9e6; border-left: 4px solid #f39c12;">
+                <h2>🔄 Migrate All MP3s to Firebase Storage</h2>
+                <p style="color: #7f8c8d; margin-bottom: 15px;">
+                    Migrate all GitHub-hosted MP3 files to Firebase Storage. This will:
+                </p>
+                <ul style="color: #7f8c8d; margin-bottom: 15px; margin-left: 20px;">
+                    <li>Download each MP3 from GitHub Pages</li>
+                    <li>Upload it to Firebase Storage</li>
+                    <li>Update database with new Firebase Storage URLs</li>
+                    <li>Make your site fully independent from GitHub</li>
+                </ul>
+                <p style="color: #e67e22; font-weight: bold; margin-bottom: 15px;">
+                    ⚠️ This will process 200+ files and may take several minutes. Keep this page open until complete.
+                </p>
+                <button class="btn btn-primary" onclick="migrateAllToFirebase()" id="migrateBtn">
+                    🚀 Start Migration
+                </button>
+                <button class="btn" onclick="stopMigration()" id="stopMigrateBtn" style="display: none; background: #e74c3c; color: white;">
+                    ⏸️ Stop Migration
+                </button>
+                <div id="migrationProgress" style="display: none; margin-top: 15px;">
+                    <div style="background: #ecf0f1; border-radius: 5px; height: 30px; overflow: hidden; margin-bottom: 10px;">
+                        <div id="migrationProgressBar" style="background: linear-gradient(90deg, #3498db, #2ecc71); height: 100%; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;"></div>
+                    </div>
+                    <p id="migrationStatus" style="font-size: 1.1em; color: #2c3e50; font-weight: bold;"></p>
+                    <div id="migrationDetails" style="max-height: 200px; overflow-y: auto; background: white; padding: 10px; border-radius: 5px; margin-top: 10px; font-family: monospace; font-size: 0.9em;"></div>
+                </div>
+            </div>
+
             <div class="section">
                 <h2>Current Sound Library</h2>
                 <div id="soundsContent" class="loading">
@@ -812,6 +841,175 @@
                 showStatus('Error uploading sound: ' + error.message, true);
                 document.getElementById('uploadProgress').style.display = 'none';
             }
+        }
+
+        // Migration state
+        let migrationStopped = false;
+        let migrationStats = {
+            total: 0,
+            completed: 0,
+            failed: 0,
+            skipped: 0
+        };
+
+        // Migrate all GitHub-hosted files to Firebase Storage
+        async function migrateAllToFirebase() {
+            if (!confirm('This will migrate all GitHub-hosted MP3 files to Firebase Storage.\n\nThis may take 10-15 minutes for 200+ files.\n\nContinue?')) {
+                return;
+            }
+
+            migrationStopped = false;
+            migrationStats = { total: 0, completed: 0, failed: 0, skipped: 0 };
+
+            // Show progress UI
+            document.getElementById('migrationProgress').style.display = 'block';
+            document.getElementById('migrateBtn').style.display = 'none';
+            document.getElementById('stopMigrateBtn').style.display = 'inline-block';
+            document.getElementById('migrationDetails').innerHTML = '';
+
+            try {
+                // Get all sounds from database
+                const snapshot = await database.ref('sounds').once('value');
+                const sounds = snapshot.val();
+
+                if (!sounds) {
+                    addMigrationLog('❌ No sounds found in database', true);
+                    return;
+                }
+
+                // Collect all files that need migration
+                const filesToMigrate = [];
+                Object.keys(sounds).forEach(categoryKey => {
+                    const category = sounds[categoryKey];
+                    if (category.files) {
+                        category.files.forEach(fileData => {
+                            const filename = fileData.filename || fileData;
+                            const url = fileData.url || '';
+
+                            // Only migrate if it's a GitHub Pages URL
+                            if (url.includes('github.io') || url.includes('mshipleydp')) {
+                                filesToMigrate.push({
+                                    categoryKey,
+                                    filename,
+                                    url,
+                                    fileData
+                                });
+                            }
+                        });
+                    }
+                });
+
+                migrationStats.total = filesToMigrate.length;
+                addMigrationLog(`📊 Found ${migrationStats.total} files to migrate`);
+
+                // Migrate files in batches
+                const batchSize = 3; // Process 3 files at a time
+                for (let i = 0; i < filesToMigrate.length; i += batchSize) {
+                    if (migrationStopped) {
+                        addMigrationLog('⏸️ Migration stopped by user', true);
+                        break;
+                    }
+
+                    const batch = filesToMigrate.slice(i, i + batchSize);
+                    await Promise.all(batch.map(file => migrateFile(file)));
+
+                    // Update progress
+                    updateMigrationProgress();
+                }
+
+                // Complete
+                if (!migrationStopped) {
+                    addMigrationLog('✅ Migration complete!', false);
+                    document.getElementById('stopMigrateBtn').style.display = 'none';
+                    setTimeout(() => {
+                        loadSounds(); // Reload the sound list
+                    }, 2000);
+                }
+
+            } catch (error) {
+                console.error('Migration error:', error);
+                addMigrationLog('❌ Migration failed: ' + error.message, true);
+            }
+        }
+
+        // Migrate a single file
+        async function migrateFile(fileInfo) {
+            const { categoryKey, filename, url } = fileInfo;
+
+            try {
+                addMigrationLog(`⬇️ Fetching: ${filename}`);
+
+                // Fetch the MP3 from GitHub
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                addMigrationLog(`⬆️ Uploading: ${filename} (${(blob.size / 1024 / 1024).toFixed(2)} MB)`);
+
+                // Upload to Firebase Storage
+                const storagePath = `sounds/${categoryKey}/${filename}`;
+                const storageRef = storage.ref(storagePath);
+                await storageRef.put(blob);
+
+                // Get download URL
+                const downloadURL = await storageRef.getDownloadURL();
+
+                // Update database
+                const snapshot = await database.ref(`sounds/${categoryKey}`).once('value');
+                const category = snapshot.val();
+
+                const updatedFiles = category.files.map(f => {
+                    const fname = f.filename || f;
+                    if (fname === filename) {
+                        return {
+                            filename: filename,
+                            url: downloadURL,
+                            path: storagePath
+                        };
+                    }
+                    return f;
+                });
+
+                await database.ref(`sounds/${categoryKey}/files`).set(updatedFiles);
+
+                migrationStats.completed++;
+                addMigrationLog(`✅ Migrated: ${filename}`);
+
+            } catch (error) {
+                migrationStats.failed++;
+                addMigrationLog(`❌ Failed: ${filename} - ${error.message}`, true);
+                console.error(`Failed to migrate ${filename}:`, error);
+            }
+        }
+
+        // Update migration progress bar
+        function updateMigrationProgress() {
+            const percent = Math.round((migrationStats.completed + migrationStats.failed) / migrationStats.total * 100);
+            document.getElementById('migrationProgressBar').style.width = percent + '%';
+            document.getElementById('migrationProgressBar').textContent = percent + '%';
+            document.getElementById('migrationStatus').textContent =
+                `Progress: ${migrationStats.completed} completed, ${migrationStats.failed} failed, ` +
+                `${migrationStats.total - migrationStats.completed - migrationStats.failed} remaining`;
+        }
+
+        // Add log message
+        function addMigrationLog(message, isError = false) {
+            const details = document.getElementById('migrationDetails');
+            const line = document.createElement('div');
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            line.style.color = isError ? '#e74c3c' : '#2c3e50';
+            line.style.marginBottom = '5px';
+            details.appendChild(line);
+            details.scrollTop = details.scrollHeight;
+        }
+
+        // Stop migration
+        function stopMigration() {
+            migrationStopped = true;
+            document.getElementById('migrateBtn').style.display = 'inline-block';
+            document.getElementById('stopMigrateBtn').style.display = 'none';
         }
 
         // Toggle category visibility

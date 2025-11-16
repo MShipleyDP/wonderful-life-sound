@@ -1,0 +1,237 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Admin Login - It's A Wonderful Life Sound Manager
+
+    style.
+      :root {
+        --color-primary: #DC2626;
+        --color-primary-dark: #991B1B;
+        --color-bg: #F9FAFB;
+        --color-surface: #FFFFFF;
+        --color-text: #1A1A1A;
+        --color-text-muted: #6B7280;
+        --space-2: 16px;
+        --space-3: 24px;
+        --space-4: 32px;
+        --space-6: 48px;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-3);
+      }
+
+      .login-container {
+        background: var(--color-surface);
+        border-radius: var(--radius-md);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+        width: 100%;
+        padding: var(--space-6);
+        text-align: center;
+      }
+
+      .login-header {
+        margin-bottom: var(--space-4);
+      }
+
+      .login-header h1 {
+        font-size: 1.75rem;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+      }
+
+      .login-header p {
+        color: var(--color-text-muted);
+        font-size: 0.9375rem;
+      }
+
+      #googleSignInBtn {
+        background: white;
+        border: 2px solid #E5E5E5;
+        border-radius: var(--radius-sm);
+        padding: var(--space-3);
+        width: 100%;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        transition: all 0.2s ease;
+        margin-bottom: var(--space-3);
+      }
+
+      #googleSignInBtn:hover {
+        background: #F9FAFB;
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+      }
+
+      #googleSignInBtn:active {
+        transform: translateY(0);
+      }
+
+      .google-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      #status {
+        margin-top: var(--space-3);
+        padding: var(--space-2);
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        display: none;
+      }
+
+      #status.error {
+        background: #FEE2E2;
+        color: #991B1B;
+        border: 1px solid #FCA5A5;
+        display: block;
+      }
+
+      #status.success {
+        background: #D1FAE5;
+        color: #065F46;
+        border: 1px solid #6EE7B7;
+        display: block;
+      }
+
+      #status.loading {
+        background: #DBEAFE;
+        color: #1E40AF;
+        border: 1px solid #93C5FD;
+        display: block;
+      }
+
+      .info-text {
+        margin-top: var(--space-4);
+        padding-top: var(--space-4);
+        border-top: 1px solid #E5E5E5;
+        color: var(--color-text-muted);
+        font-size: 0.8125rem;
+      }
+
+      .loader {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid #93C5FD;
+        border-top-color: #1E40AF;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        margin-left: 8px;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+  body
+    .login-container
+      .login-header
+        h1 🎭 Admin Login
+        p It's A Wonderful Life - Sound Manager
+
+      button#googleSignInBtn
+        svg.google-icon(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48")
+          path(fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z")
+          path(fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z")
+          path(fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z")
+          path(fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z")
+          path(fill="none" d="M0 0h48v48H0z")
+        | Sign in with Google
+
+      #status
+
+      .info-text
+        p Only authorized administrators can access this panel.
+        p Contact the system administrator if you need access.
+
+    script(src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js")
+    script(src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js")
+
+    script.
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyA1yMZIjtukkRNYAgki_hW68JcmQixkGaE",
+        authDomain: "wonderful-life-sound.firebaseapp.com",
+        databaseURL: "https://wonderful-life-sound-default-rtdb.firebaseio.com",
+        projectId: "wonderful-life-sound",
+        storageBucket: "wonderful-life-sound.firebasestorage.app",
+        messagingSenderId: "992667824102",
+        appId: "1:992667824102:web:dd883f2b4b95361cd7b027"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      // Status message helper
+      function showStatus(message, type) {
+        const statusEl = document.getElementById('status');
+        statusEl.textContent = message;
+        statusEl.className = type;
+      }
+
+      // Google Sign-In
+      document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+        try {
+          showStatus('Signing in...', 'loading');
+
+          const provider = new firebase.auth.GoogleAuthProvider();
+          const result = await auth.signInWithPopup(provider);
+
+          showStatus('Authenticating...', 'loading');
+
+          // Get ID token
+          const idToken = await result.user.getIdToken();
+
+          // Create session cookie
+          const response = await fetch('/admin/sessionLogin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showStatus('✅ Signed in as ' + data.email + '. Redirecting...', 'success');
+
+            // Redirect with token as query parameter
+            // Server will verify and set cookie
+            window.location.href = '/admin?token=' + encodeURIComponent(idToken);
+          } else {
+            showStatus('❌ ' + (data.error || 'Access denied'), 'error');
+            await auth.signOut();
+          }
+        } catch (error) {
+          console.error('Sign-in error:', error);
+          if (error.code === 'auth/popup-closed-by-user') {
+            showStatus('Sign-in cancelled', 'error');
+          } else {
+            showStatus('❌ Sign-in failed: ' + error.message, 'error');
+          }
+        }
+      });

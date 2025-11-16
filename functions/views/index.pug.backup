@@ -1,0 +1,1763 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title It's A Wonderful Life - Sound Review
+    style.
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #1a1a2e;
+        padding: 0;
+        line-height: 1.6;
+      }
+      *:focus-visible {
+        outline: 3px solid #f46524;
+        outline-offset: 2px;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #ffffff;
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
+      }
+      header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+        color: white;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .poster-container {
+        flex-shrink: 0;
+      }
+      .poster-container img {
+        width: 200px;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border: 3px solid #f46524;
+      }
+      .header-text {
+        flex-grow: 1;
+      }
+      header h1 {
+        font-size: 3em;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        color: #ffffff;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      header p {
+        font-size: 1.2em;
+        opacity: 0.95;
+        color: #f0f0f0;
+      }
+      .clt-logo {
+        margin-top: 15px;
+        opacity: 0.9;
+      }
+      .clt-text {
+        font-size: 1em;
+        color: #f0f0f0;
+        font-style: italic;
+        margin: 0;
+      }
+      .mobile-menu-toggle {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1001;
+        background: linear-gradient(135deg, #f46524 0%, #ff7e52 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(244, 101, 36, 0.4);
+        transition: all 0.3s;
+      }
+      .mobile-menu-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 24px rgba(244, 101, 36, 0.5);
+      }
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          text-align: center;
+          padding: 30px 20px;
+        }
+        .poster-container img {
+          width: 150px;
+        }
+        header h1 {
+          font-size: 2em;
+        }
+        .main-layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 280px;
+          height: 100vh;
+          z-index: 1000;
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
+          box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3);
+        }
+        .sidebar.mobile-open {
+          transform: translateX(0);
+        }
+        .sidebar-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 999;
+        }
+        .sidebar-overlay.show {
+          display: block;
+        }
+        .mobile-menu-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .content {
+          padding: 24px 16px;
+        }
+        .category {
+          padding: 24px;
+        }
+        .sound-files {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .action-buttons {
+          gap: 10px;
+          padding: 15px;
+        }
+      }
+      @media (max-width: 480px) {
+        .header-content {
+          gap: 20px;
+          padding: 20px 15px;
+        }
+        header h1 {
+          font-size: 1.75em;
+        }
+        .poster-container img {
+          width: 120px;
+        }
+        .content {
+          padding: 16px 12px;
+        }
+        .category {
+          padding: 20px;
+          border-radius: 12px;
+        }
+        .category-title {
+          font-size: 1.4em;
+        }
+        .sound-file {
+          padding: 16px;
+        }
+        .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+        .instructions {
+          margin: 15px;
+          padding: 15px;
+          border-radius: 12px;
+        }
+        nav {
+          padding: 12px 15px;
+          gap: 8px;
+        }
+        nav a {
+          font-size: 0.9em;
+          padding: 8px 14px;
+        }
+      }
+      .instructions {
+        background: #fff8f0;
+        border-left: 5px solid #f46524;
+        padding: 20px;
+        margin: 20px;
+        border-radius: 5px;
+      }
+      .instructions h3 {
+        color: #1a1a2e;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+      .instructions ul {
+        margin-left: 20px;
+      }
+      .instructions li {
+        margin: 5px 0;
+        color: #333;
+      }
+      .main-layout {
+        display: flex;
+        min-height: calc(100vh - 200px);
+      }
+      .sidebar {
+        width: 300px;
+        background: linear-gradient(180deg, #2d2d44 0%, #1a1a2e 100%);
+        border-right: 1px solid #3d3d5c;
+        position: sticky;
+        top: 0;
+        height: calc(100vh - 200px);
+        overflow-y: auto;
+        flex-shrink: 0;
+      }
+      .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 2px solid #3d3d5c;
+      }
+      .sidebar-header h3 {
+        color: white;
+        font-size: 0.875em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0;
+        font-weight: 700;
+        opacity: 0.7;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px;
+      }
+      .sidebar nav a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        padding: 14px 16px;
+        border-radius: 8px;
+        font-size: 0.95em;
+        transition: all 0.2s;
+        font-weight: 500;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        position: relative;
+      }
+      .sidebar nav a:hover {
+        background: rgba(244, 101, 36, 0.15);
+        color: #ff7e52;
+      }
+      .sidebar nav a.active {
+        background: linear-gradient(135deg, #f46524 0%, #ff7e52 100%);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(244, 101, 36, 0.3);
+      }
+      .sidebar nav a.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 70%;
+        background: white;
+        border-radius: 0 4px 4px 0;
+      }
+      .sidebar nav a .count {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.75em;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        align-items: flex-end;
+        line-height: 1.3;
+      }
+      .sidebar nav a.active .count {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .count-main {
+        font-size: 1.1em;
+      }
+      .count-details {
+        font-size: 0.85em;
+        opacity: 0.85;
+        white-space: nowrap;
+      }
+      .sidebar nav a:focus-visible {
+        outline: 3px solid #ffffff;
+        outline-offset: 2px;
+      }
+      .content {
+        flex: 1;
+        padding: 40px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        overflow-y: auto;
+      }
+      .category {
+        display: none;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        animation: fadeIn 0.3s ease-in;
+      }
+      .category.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+      .category-title {
+        color: #1a1a2e;
+        font-size: 1.75em;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+      .category-count {
+        background: linear-gradient(135deg, #f46524 0%, #ff7e52 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.875em;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(244, 101, 36, 0.25);
+      }
+      .sound-files {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+      }
+      .sound-file {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        border: 2px solid #f0f0f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .sound-file:hover {
+        border-color: #f46524;
+        box-shadow: 0 8px 24px rgba(244, 101, 36, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px);
+      }
+      .sound-file.selected {
+        background: linear-gradient(135deg, #fff8f0 0%, #fff3e8 100%);
+        border-color: #f46524;
+        box-shadow: 0 4px 16px rgba(244, 101, 36, 0.15);
+      }
+      .sound-file.selected::before {
+        content: '✓';
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #f46524 0%, #ff7e52 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 2px 8px rgba(244, 101, 36, 0.3);
+      }
+      .file-id {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        font-size: 0.65em;
+        color: #999;
+        font-family: 'Courier New', monospace;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2px 5px;
+        border-radius: 3px;
+        border: 1px solid #e0e0e0;
+        user-select: all;
+        max-width: calc(100% - 70px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .file-id:hover {
+        background: #f0f0f0;
+        color: #666;
+        cursor: pointer;
+      }
+      .delete-flag {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 18px;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .delete-flag:hover {
+        background: #fee;
+        border-color: #e74c3c;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+      }
+      .delete-flag.flagged {
+        background: #e74c3c;
+        border-color: #c0392b;
+        color: white;
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+      }
+      .delete-flag.flagged:hover {
+        background: #c0392b;
+        box-shadow: 0 4px 12px rgba(192, 57, 43, 0.5);
+      }
+      .sound-file.flagged-for-deletion {
+        opacity: 0.6;
+        border-color: #e74c3c;
+        background: #fee;
+      }
+      .sound-file.saving {
+        opacity: 0.7;
+        pointer-events: none;
+      }
+      .sound-file.saving::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: #f46524;
+        animation: saving-pulse 1s infinite;
+      }
+      .sound-file.saved {
+        animation: saved-flash 0.5s ease-out;
+      }
+      .sound-file.error {
+        animation: error-shake 0.4s;
+        border-left-color: #d32f2f;
+      }
+      @keyframes saving-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+      @keyframes saved-flash {
+        0% { background: white; }
+        50% { background: #e8f5e9; }
+        100% { background: white; }
+      }
+      @keyframes error-shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+      }
+      .sound-file-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .favorite-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 4px;
+        accent-color: #f46524;
+      }
+      .favorite-checkbox:focus-visible {
+        outline: 2px solid #f46524;
+        outline-offset: 3px;
+      }
+      .file-name {
+        font-weight: 600;
+        color: #1a1a2e;
+        word-break: break-word;
+        font-size: 1.05em;
+        transition: color 0.2s;
+        cursor: pointer;
+        flex: 1;
+        line-height: 1.4;
+      }
+      .file-name:hover {
+        color: #f46524;
+      }
+      audio {
+        width: 100%;
+        height: 48px;
+        border-radius: 8px;
+        outline: none;
+      }
+      audio:focus-visible {
+        box-shadow: 0 0 0 3px rgba(244, 101, 36, 0.2);
+      }
+      .rating-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0 0 0;
+        border-top: 1px solid #f0f0f0;
+      }
+      .rating-label {
+        font-size: 0.875em;
+        color: #666;
+        font-weight: 500;
+      }
+      .rating-stars {
+        display: flex;
+        gap: 4px;
+      }
+      .star {
+        font-size: 22px;
+        cursor: pointer;
+        color: #d0d0d0;
+        transition: all 0.2s ease;
+        padding: 4px;
+        border-radius: 4px;
+      }
+      .star:hover {
+        color: #ffd700;
+        transform: scale(1.15);
+      }
+      .star.active {
+        color: #ffd700;
+        filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.4));
+      }
+      .star:focus-visible {
+        outline: 2px solid #f46524;
+        outline-offset: 2px;
+      }
+      .notes-section {
+        margin-top: 24px;
+        padding: 20px;
+        background: #fafbfc;
+        border-radius: 12px;
+        border: 1px solid #e8eaed;
+      }
+      .notes-section label {
+        display: block;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 12px;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .notes-section label::before {
+        content: '📝';
+        font-size: 1.1em;
+      }
+      .notes-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 14px;
+        border: 2px solid #e8eaed;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 0.95em;
+        resize: vertical;
+        transition: all 0.3s ease;
+        background: white;
+        line-height: 1.6;
+      }
+      .notes-textarea:focus {
+        outline: none;
+        border-color: #f46524;
+        box-shadow: 0 0 0 4px rgba(244, 101, 36, 0.1);
+      }
+      .notes-textarea::placeholder {
+        color: #999;
+      }
+      .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(8px);
+        padding: 20px;
+        border-top: 2px solid #e0e0e0;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      }
+      .btn {
+        padding: 14px 30px;
+        min-height: 48px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+      .btn:disabled:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .btn:focus-visible {
+        outline: 3px solid #f46524;
+        outline-offset: 3px;
+      }
+      .btn-primary {
+        background: #f46524;
+        color: white;
+      }
+      .btn-primary:hover:not(:disabled) {
+        background: #d94f14;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(244,101,36,0.4);
+      }
+      .btn-secondary {
+        background: #2d2d44;
+        color: white;
+      }
+      .btn-secondary:hover:not(:disabled) {
+        background: #3d3d5c;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(45,45,68,0.4);
+      }
+      .btn-danger {
+        background: #8b0000;
+        color: white;
+      }
+      .btn-danger:hover:not(:disabled) {
+        background: #6b0000;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139,0,0,0.4);
+      }
+      .status-message {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        padding: 16px 24px;
+        background: #2d2d44;
+        color: white;
+        border-radius: 8px;
+        border-left: 4px solid #f46524;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        opacity: 0;
+        transform: translateX(100px);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        z-index: 1000;
+        font-weight: 600;
+        font-size: 0.95em;
+      }
+      .status-message.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .status-message.error {
+        background: #d32f2f;
+        border-left-color: #8b0000;
+      }
+      .status-message.success {
+        background: #2e7d32;
+        border-left-color: #1b5e20;
+      }
+      .status-message.info {
+        background: #1976d2;
+        border-left-color: #0d47a1;
+      }
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+        .container {
+          box-shadow: none;
+          max-width: 100%;
+        }
+        nav, .action-buttons, .instructions, .status-message {
+          display: none;
+        }
+        audio {
+          display: none;
+        }
+        .favorite-checkbox {
+          -webkit-appearance: checkbox;
+          print-color-adjust: exact;
+        }
+        .sound-file {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          border: 1px solid #ddd;
+          margin-bottom: 8px;
+        }
+        .category {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          margin-bottom: 24px;
+        }
+        .category-header {
+          background: #2d2d44 !important;
+          color: white !important;
+          print-color-adjust: exact;
+        }
+        .star.active {
+          color: #ffd700 !important;
+          print-color-adjust: exact;
+        }
+        header {
+          print-color-adjust: exact;
+        }
+      }
+
+  body
+    #statusMessage.status-message Saved!
+
+    .container
+      header
+        .header-content
+          .poster-container
+            img(src="https://static.wixstatic.com/media/74ecd4_224541a675f84255a4d117673e5effd9~mv2.png/v1/fill/w_491,h_647,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/74ecd4_224541a675f84255a4d117673e5effd9~mv2.png" alt="It's A Wonderful Life Poster")
+          .header-text
+            h1 It's A Wonderful Life
+            p Sound Effect Review & Selection
+            .clt-logo
+              p.clt-text Presented by Clemson Little Theatre
+
+      .instructions
+        h3 Instructions for Director:
+        ul
+          li Use the sidebar to navigate between sound categories - click any category to view its files
+          li Category counts show: total files, ✓ checked files, 🗑 flagged for deletion
+          li Check the box next to sounds you want to use (cannot be checked and flagged simultaneously)
+          li Click the trash icon (bottom-right) to flag files for deletion
+          li Rate each file with stars (1-5) to show preference
+          li Click play on each audio player to preview the sound
+          li Add notes in the text area below each category (cues, timing, volume, etc.)
+          li All changes save automatically and sync in real-time across all devices
+          li Use "Save Progress" to manually save, or "Export Report" to create a printable summary
+          li File IDs are shown in the bottom-left corner of each card for reference
+
+      .sidebar-overlay(onclick="toggleMobileMenu()")
+
+      .main-layout
+        .sidebar
+          .sidebar-header
+            h3 Sound Categories
+          nav#categoryNav
+            each category, key in soundData
+              - const categoryTitle = category.title.replace(/[🔔☎️🎹👼🚕🚨🎉💒📷🇺🇸✈️💧🍷🌀🎷🍺⚰️⏰]/g, '').trim()
+              - const totalFiles = category.files ? category.files.length : 0
+              - let checkedCount = 0
+              - let flaggedCount = 0
+              - const hasNotes = selections && selections.notes && selections.notes[key] && selections.notes[key].trim().length > 0
+              if category.files
+                each file in category.files
+                  - const filename = file.filename || file
+                  - const fileId = file.id || `${key}-${index}`
+                  if selections && selections.favorites && selections.favorites.some(fav => fav.category === key && fav.file === filename)
+                    - checkedCount++
+                  if selections && selections.deleteFlags && selections.deleteFlags[fileId]
+                    - flaggedCount++
+              a(onclick=`showCategory('${key}')` data-category=key)
+                span= categoryTitle
+                span.count(data-total=totalFiles data-checked=checkedCount data-flagged=flaggedCount data-has-notes=hasNotes ? 'true' : 'false')
+                  span.count-main= totalFiles
+                  if checkedCount > 0 || flaggedCount > 0 || hasNotes
+                    span.count-details
+                      if checkedCount > 0
+                        = `✓${checkedCount}`
+                      if checkedCount > 0 && (flaggedCount > 0 || hasNotes)
+                        = ' • '
+                      if flaggedCount > 0
+                        = `🗑${flaggedCount}`
+                      if flaggedCount > 0 && hasNotes
+                        = ' • '
+                      if hasNotes
+                        = '📝'
+
+        .content#soundCategories
+          each category, key in soundData
+            .category(id=key data-category-key=key)
+              .category-header
+                h2.category-title= category.title
+                span.category-count= category.files.length + ' files'
+
+              p(style="color: #2a5298; margin-bottom: 5px; font-weight: 600;")= `Director's Request: "${category.directorRequest}"`
+              p(style="color: #666; margin-bottom: 20px; font-style: italic;")= category.description
+
+              .sound-files
+                each file, index in category.files
+                  - const filename = file.filename || file
+                  - const fileUrl = file.url || `${key}/${filename}`
+                  - const fileId = file.id || `${key}-${index}`
+                  - const isFavorite = selections && selections.favorites && selections.favorites.some(fav => fav.category === key && fav.file === filename)
+                  - const ratingKey = `${key}/${filename}`
+                  - const rating = selections && selections.ratings && selections.ratings[ratingKey] ? selections.ratings[ratingKey] : 0
+                  - const isFlaggedForDeletion = selections && selections.deleteFlags && selections.deleteFlags[fileId]
+                  .sound-file(data-category=key data-file=filename data-file-id=fileId class=(isFavorite ? 'selected' : '') + (isFlaggedForDeletion ? ' flagged-for-deletion' : '') role="article" aria-label=`Sound effect: ${filename}`)
+                    .delete-flag(onclick=`toggleDeleteFlag('${key}', '${filename}', '${fileId}')` class=isFlaggedForDeletion ? 'flagged' : '' title=isFlaggedForDeletion ? 'Flagged for deletion - Click to unflag' : 'Flag for deletion' aria-label=isFlaggedForDeletion ? 'Remove deletion flag' : 'Flag for deletion')= isFlaggedForDeletion ? '🗑️' : '🗑'
+                    .sound-file-header
+                      input.favorite-checkbox(type="checkbox" id=`${key}-${index}` checked=isFavorite onchange="toggleFavorite(this)" aria-label=`Mark ${filename} as favorite`)
+                      label.file-name(for=`${key}-${index}`)= filename
+                    span.file-id(title="Unique File ID")= fileId
+                    audio(controls preload="none" aria-label=`Preview ${filename}`)
+                      source(src=fileUrl type="audio/mpeg")
+                      | Your browser does not support audio playback.
+                    .rating-container
+                      span.rating-label Rate this sound:
+                      .rating-stars(data-rating=rating role="radiogroup" aria-label=`Rate ${filename} from 1 to 5 stars`)
+                        - for (let star = 1; star <= 5; star++)
+                          span.star(onclick=`setRating(this, ${star})` data-star=star class=star <= rating ? 'active' : '' role="radio" tabindex="0" aria-checked=star <= rating ? 'true' : 'false' aria-label=`${star} star${star !== 1 ? 's' : ''}` onkeydown=`if(event.key==='Enter'||event.key===' '){event.preventDefault();setRating(this, ${star})}`) ★
+
+              .notes-section
+                label(for=`${key}-notes`) Director's Notes (cues, timing, volume, preferences):
+                - const savedNotes = selections && selections.notes && selections.notes[key] ? selections.notes[key] : ''
+                textarea.notes-textarea(id=`${key}-notes` placeholder="Add your notes here: When to use this sound, specific cues, volume levels, layering instructions, etc." oninput=`saveNote('${key}', this.value)`)= savedNotes
+
+      button.mobile-menu-toggle(onclick="toggleMobileMenu()" aria-label="Toggle category menu") ☰
+
+      .action-buttons
+        button.btn.btn-primary(onclick="saveProgress()") Save Progress
+        button.btn.btn-secondary(onclick="exportReport()") Export Report
+        button.btn.btn-danger(onclick="clearAll()") Clear All Selections
+
+    //- Firebase Client SDK
+    script(src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js")
+    script(src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js")
+
+    script
+      | const soundData = !{JSON.stringify(soundData)};
+
+    script.
+      // Initialize page
+      function init() {
+        // Setup real-time listeners for changes from other users
+        setupRealTimeListeners();
+
+        // Show first category by default
+        const firstCategory = document.querySelector('.category');
+        const firstNavLink = document.querySelector('.sidebar nav a');
+        if (firstCategory && firstNavLink) {
+          firstCategory.classList.add('active');
+          firstNavLink.classList.add('active');
+        }
+
+        console.log('Page initialized with real-time sync');
+      }
+
+      // Show specific category
+      function showCategory(categoryKey) {
+        // Hide all categories
+        document.querySelectorAll('.category').forEach(cat => {
+          cat.classList.remove('active');
+        });
+
+        // Remove active class from all nav links
+        document.querySelectorAll('.sidebar nav a').forEach(link => {
+          link.classList.remove('active');
+        });
+
+        // Show selected category
+        const selectedCategory = document.querySelector(`.category[data-category-key="${categoryKey}"]`);
+        if (selectedCategory) {
+          selectedCategory.classList.add('active');
+          selectedCategory.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Add active class to clicked nav link
+        const selectedLink = document.querySelector(`.sidebar nav a[data-category="${categoryKey}"]`);
+        if (selectedLink) {
+          selectedLink.classList.add('active');
+        }
+
+        // Close mobile menu if open
+        if (window.innerWidth <= 768) {
+          toggleMobileMenu();
+        }
+      }
+
+      // Toggle mobile menu
+      function toggleMobileMenu() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+
+        if (sidebar && overlay) {
+          sidebar.classList.toggle('mobile-open');
+          overlay.classList.toggle('show');
+        }
+      }
+
+      // Debounce utility function
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Pending save operations tracker
+      const pendingSaves = {
+        favorites: new Map(),
+        ratings: new Map(),
+        deleteFlags: new Map()
+      };
+
+      // Toggle favorite - updates UI immediately, saves with debounce
+      function toggleFavorite(checkbox) {
+        const soundFile = checkbox.closest('.sound-file');
+        const category = soundFile.dataset.category;
+        const filename = soundFile.dataset.file;
+        const fileId = soundFile.dataset.fileId;
+        const isFavorite = checkbox.checked;
+
+        // If favoriting, remove deletion flag (mutually exclusive)
+        if (isFavorite) {
+          const deleteFlag = soundFile.querySelector('.delete-flag');
+          if (deleteFlag && deleteFlag.classList.contains('flagged')) {
+            deleteFlag.classList.remove('flagged');
+            deleteFlag.textContent = '🗑';
+            deleteFlag.title = 'Flag for deletion';
+            soundFile.classList.remove('flagged-for-deletion');
+            // Save the unflag
+            pendingSaves.deleteFlags.set(fileId, { category, filename, fileId, isFlagged: false });
+            debouncedSaveDeleteFlag(category, filename, fileId, false);
+          }
+          soundFile.classList.add('selected');
+        } else {
+          soundFile.classList.remove('selected');
+        }
+
+        // Save with debounce to prevent rapid clicks
+        const key = `${category}:${filename}`;
+        pendingSaves.favorites.set(key, { category, filename, isFavorite });
+        debouncedSaveFavorite(category, filename, isFavorite);
+
+        // Update category counts
+        updateCategoryCounts(category);
+      }
+
+      // Set rating - updates UI immediately, saves with debounce
+      function setRating(starElement, rating) {
+        const container = starElement.closest('.rating-stars');
+        const stars = container.querySelectorAll('.star');
+        const soundFile = starElement.closest('.sound-file');
+        const category = soundFile.dataset.category;
+        const filename = soundFile.dataset.file;
+
+        // Update UI immediately
+        container.setAttribute('data-rating', rating);
+
+        stars.forEach((star, index) => {
+          if (index < rating) {
+            star.classList.add('active');
+          } else {
+            star.classList.remove('active');
+          }
+        });
+
+        // Save with debounce to prevent rapid clicks
+        const key = `${category}:${filename}`;
+        pendingSaves.ratings.set(key, { category, filename, rating });
+        debouncedSaveRating(category, filename, rating);
+      }
+
+      // Save individual favorite
+      function saveFavorite(category, filename, isFavorite) {
+        const key = `${category}:${filename}`;
+        const pending = pendingSaves.favorites.get(key);
+
+        // Only save if this is still the latest state
+        if (!pending || pending.isFavorite !== isFavorite) {
+          return;
+        }
+
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) soundFile.classList.add('saving');
+
+        fetch('/api/selections/favorite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category, filename, isFavorite })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Favorite saved:', category, filename, isFavorite);
+          pendingSaves.favorites.delete(key);
+          if (soundFile) {
+            soundFile.classList.remove('saving');
+            soundFile.classList.add('saved');
+            setTimeout(() => soundFile.classList.remove('saved'), 1000);
+          }
+        })
+        .catch(error => {
+          console.error('Error saving favorite:', error);
+          if (soundFile) {
+            soundFile.classList.remove('saving');
+            soundFile.classList.add('error');
+            setTimeout(() => soundFile.classList.remove('error'), 1000);
+          }
+          showStatus('Error saving favorite');
+        });
+      }
+
+      // Save individual rating
+      function saveRating(category, filename, rating) {
+        const key = `${category}:${filename}`;
+        const pending = pendingSaves.ratings.get(key);
+
+        // Only save if this is still the latest state
+        if (!pending || pending.rating !== rating) {
+          return;
+        }
+
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) soundFile.classList.add('saving');
+
+        fetch('/api/selections/rating', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category, filename, rating })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Rating saved:', category, filename, rating);
+          pendingSaves.ratings.delete(key);
+          if (soundFile) {
+            soundFile.classList.remove('saving');
+            soundFile.classList.add('saved');
+            setTimeout(() => soundFile.classList.remove('saved'), 1000);
+          }
+        })
+        .catch(error => {
+          console.error('Error saving rating:', error);
+          if (soundFile) {
+            soundFile.classList.remove('saving');
+            soundFile.classList.add('error');
+            setTimeout(() => soundFile.classList.remove('error'), 1000);
+          }
+          showStatus('Error saving rating');
+        });
+      }
+
+      // Debounced save functions (150ms delay)
+      const debouncedSaveFavorite = debounce(saveFavorite, 150);
+      const debouncedSaveRating = debounce(saveRating, 150);
+
+      // Toggle delete flag - updates UI immediately, saves with debounce
+      function toggleDeleteFlag(category, filename, fileId) {
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        const deleteFlag = soundFile.querySelector('.delete-flag');
+        const isFlagged = deleteFlag.classList.contains('flagged');
+
+        // Toggle UI immediately
+        if (isFlagged) {
+          deleteFlag.classList.remove('flagged');
+          deleteFlag.textContent = '🗑';
+          deleteFlag.title = 'Flag for deletion';
+          soundFile.classList.remove('flagged-for-deletion');
+        } else {
+          // If flagging for deletion, remove favorite (mutually exclusive)
+          const checkbox = soundFile.querySelector('.favorite-checkbox');
+          if (checkbox && checkbox.checked) {
+            checkbox.checked = false;
+            soundFile.classList.remove('selected');
+            // Save the unfavorite
+            const key = `${category}:${filename}`;
+            pendingSaves.favorites.set(key, { category, filename, isFavorite: false });
+            debouncedSaveFavorite(category, filename, false);
+          }
+
+          deleteFlag.classList.add('flagged');
+          deleteFlag.textContent = '🗑️';
+          deleteFlag.title = 'Flagged for deletion - Click to unflag';
+          soundFile.classList.add('flagged-for-deletion');
+        }
+
+        // Save with debounce
+        const newFlagState = !isFlagged;
+        pendingSaves.deleteFlags.set(fileId, { category, filename, fileId, isFlagged: newFlagState });
+        debouncedSaveDeleteFlag(category, filename, fileId, newFlagState);
+
+        // Update category counts
+        updateCategoryCounts(category);
+      }
+
+      // Save individual delete flag
+      function saveDeleteFlag(category, filename, fileId, isFlagged) {
+        const pending = pendingSaves.deleteFlags.get(fileId);
+
+        // Only save if this is still the latest state
+        if (!pending || pending.isFlagged !== isFlagged) {
+          return;
+        }
+
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) soundFile.classList.add('saving');
+
+        fetch('/api/selections/delete-flag', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category, filename, fileId, isFlagged })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Delete flag saved:', fileId, isFlagged);
+          pendingSaves.deleteFlags.delete(fileId);
+          if (soundFile) {
+            soundFile.classList.remove('saving');
+            soundFile.classList.add('saved');
+            setTimeout(() => soundFile.classList.remove('saved'), 1000);
+          }
+        })
+        .catch(error => {
+          console.error('Error saving delete flag:', error);
+          if (soundFile) {
+            soundFile.classList.remove('saving');
+            soundFile.classList.add('error');
+            setTimeout(() => soundFile.classList.remove('error'), 1000);
+          }
+          showStatus('Error saving delete flag');
+        });
+      }
+
+      const debouncedSaveDeleteFlag = debounce(saveDeleteFlag, 150);
+
+      // Save individual note (debounced)
+      let noteTimeouts = {};
+      function saveNote(category, notes) {
+        clearTimeout(noteTimeouts[category]);
+        noteTimeouts[category] = setTimeout(() => {
+          fetch('/api/selections/note', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category, notes })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Note saved:', category);
+            showStatus('Notes saved');
+            // Update category counts to show/hide note indicator
+            updateCategoryCounts(category);
+          })
+          .catch(error => {
+            console.error('Error saving note:', error);
+            showStatus('Error saving notes');
+          });
+        }, 1000);
+      }
+
+      // Setup real-time listeners for changes from other users
+      function setupRealTimeListeners() {
+        // Initialize Firebase
+        const firebaseConfig = {
+          databaseURL: 'https://wonderful-life-sound-default-rtdb.firebaseio.com',
+          projectId: 'wonderful-life-sound'
+        };
+
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+
+        const db = firebase.database();
+
+        // Store previous state to detect actual changes
+        let previousFavorites = {};
+        let previousRatings = {};
+        let previousNotes = {};
+        let previousDeleteFlags = {};
+        let isInitialLoad = true;
+
+        // Listen to all favorites with value listener for reliable updates
+        db.ref('selections/favorites').on('value', (snapshot) => {
+          const currentFavorites = {};
+          const data = snapshot.val() || {};
+
+          // Build current state from database
+          Object.keys(data).forEach(category => {
+            Object.keys(data[category]).forEach(encodedFilename => {
+              const item = data[category][encodedFilename];
+              const key = `${item.category}:${item.file}`;
+              currentFavorites[key] = true;
+            });
+          });
+
+          if (!isInitialLoad) {
+            // Check for added favorites
+            Object.keys(currentFavorites).forEach(key => {
+              if (!previousFavorites[key]) {
+                const [category, ...filenameParts] = key.split(':');
+                const filename = filenameParts.join(':');
+                updateFavoriteUI(category, filename, true);
+              }
+            });
+
+            // Check for removed favorites
+            Object.keys(previousFavorites).forEach(key => {
+              if (!currentFavorites[key]) {
+                const [category, ...filenameParts] = key.split(':');
+                const filename = filenameParts.join(':');
+                updateFavoriteUI(category, filename, false);
+              }
+            });
+          }
+
+          previousFavorites = currentFavorites;
+        });
+
+        // Listen to all ratings with value listener for reliable updates
+        db.ref('selections/ratings').on('value', (snapshot) => {
+          const currentRatings = {};
+          const data = snapshot.val() || {};
+
+          // Build current state from database
+          Object.keys(data).forEach(ratingKey => {
+            const item = data[ratingKey];
+            const key = `${item.category}:${item.filename}`;
+            currentRatings[key] = item.rating;
+          });
+
+          if (!isInitialLoad) {
+            // Check for changed or added ratings
+            Object.keys(currentRatings).forEach(key => {
+              if (previousRatings[key] !== currentRatings[key]) {
+                const [category, ...filenameParts] = key.split(':');
+                const filename = filenameParts.join(':');
+                updateRatingUI(category, filename, currentRatings[key]);
+              }
+            });
+
+            // Check for removed ratings
+            Object.keys(previousRatings).forEach(key => {
+              if (!(key in currentRatings)) {
+                const [category, ...filenameParts] = key.split(':');
+                const filename = filenameParts.join(':');
+                updateRatingUI(category, filename, 0);
+              }
+            });
+          }
+
+          previousRatings = currentRatings;
+        });
+
+        // Listen to all notes with value listener for reliable updates
+        db.ref('selections/notes').on('value', (snapshot) => {
+          const currentNotes = snapshot.val() || {};
+
+          if (!isInitialLoad) {
+            // Check for changed or added notes
+            Object.keys(currentNotes).forEach(category => {
+              const newNotes = currentNotes[category].notes || '';
+              const oldNotes = previousNotes[category] || '';
+              if (newNotes !== oldNotes) {
+                updateNoteUI(category, newNotes);
+              }
+            });
+
+            // Check for removed notes
+            Object.keys(previousNotes).forEach(category => {
+              if (!(category in currentNotes)) {
+                updateNoteUI(category, '');
+              }
+            });
+          }
+
+          // Build current state
+          const notesState = {};
+          Object.keys(currentNotes).forEach(category => {
+            notesState[category] = currentNotes[category].notes || '';
+          });
+          previousNotes = notesState;
+        });
+
+        // Listen to all delete flags with value listener for reliable updates
+        db.ref('selections/deleteFlags').on('value', (snapshot) => {
+          const currentDeleteFlags = snapshot.val() || {};
+
+          if (!isInitialLoad) {
+            // Check for changed or added delete flags
+            Object.keys(currentDeleteFlags).forEach(fileId => {
+              const newFlag = currentDeleteFlags[fileId];
+              const oldFlag = previousDeleteFlags[fileId];
+              if (JSON.stringify(newFlag) !== JSON.stringify(oldFlag)) {
+                updateDeleteFlagUI(newFlag.category, newFlag.filename, fileId, newFlag.isFlagged);
+              }
+            });
+
+            // Check for removed delete flags
+            Object.keys(previousDeleteFlags).forEach(fileId => {
+              if (!(fileId in currentDeleteFlags)) {
+                const oldFlag = previousDeleteFlags[fileId];
+                updateDeleteFlagUI(oldFlag.category, oldFlag.filename, fileId, false);
+              }
+            });
+          }
+
+          previousDeleteFlags = currentDeleteFlags;
+        });
+
+        // Listen to sound files for deletions
+        db.ref('sounds').on('value', (snapshot) => {
+          if (isInitialLoad) return;
+
+          const newSoundData = snapshot.val() || {};
+
+          // Check for deleted files by comparing with the current DOM
+          document.querySelectorAll('.sound-file').forEach(soundFileEl => {
+            const category = soundFileEl.dataset.category;
+            const filename = soundFileEl.dataset.file;
+
+            // Check if this file still exists in the database
+            const categoryData = newSoundData[category];
+            if (!categoryData || !categoryData.files) {
+              // Category deleted, remove the file
+              removeFileFromUI(category, filename);
+              return;
+            }
+
+            const fileExists = categoryData.files.some(f => {
+              const fname = f.filename || f;
+              return fname === filename;
+            });
+
+            if (!fileExists) {
+              // File was deleted, remove from UI
+              removeFileFromUI(category, filename);
+            }
+          });
+
+          // Update file counts for all categories
+          Object.keys(newSoundData).forEach(categoryKey => {
+            updateCategoryCounts(categoryKey);
+
+            // Update category header count
+            const categoryCount = document.querySelector(`.category[data-category-key="${categoryKey}"] .category-count`);
+            if (categoryCount) {
+              const fileCount = newSoundData[categoryKey].files ? newSoundData[categoryKey].files.length : 0;
+              categoryCount.textContent = `${fileCount} file${fileCount !== 1 ? 's' : ''}`;
+            }
+          });
+        });
+
+        // Mark initial load as complete after a short delay
+        setTimeout(() => {
+          isInitialLoad = false;
+          console.log('Real-time sync active - monitoring for changes');
+        }, 1000);
+      }
+
+      // Remove file from UI when deleted
+      function removeFileFromUI(category, filename) {
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) {
+          // Fade out animation
+          soundFile.style.transition = 'opacity 0.3s, transform 0.3s';
+          soundFile.style.opacity = '0';
+          soundFile.style.transform = 'scale(0.9)';
+
+          setTimeout(() => {
+            soundFile.remove();
+            console.log(`File removed from UI: ${category}/${filename}`);
+            updateCategoryCounts(category);
+          }, 300);
+        }
+      }
+
+      // Update category counts in sidebar
+      function updateCategoryCounts(categoryKey) {
+        const navLink = document.querySelector(`.sidebar nav a[data-category="${categoryKey}"]`);
+        if (!navLink) return;
+
+        const countContainer = navLink.querySelector('.count');
+        if (!countContainer) return;
+
+        // Count files in this category
+        const categoryEl = document.querySelector(`.category[data-category-key="${categoryKey}"]`);
+        if (!categoryEl) return;
+
+        const allFiles = categoryEl.querySelectorAll('.sound-file');
+        const checkedFiles = categoryEl.querySelectorAll('.sound-file .favorite-checkbox:checked');
+        const flaggedFiles = categoryEl.querySelectorAll('.sound-file .delete-flag.flagged');
+
+        const total = allFiles.length;
+        const checked = checkedFiles.length;
+        const flagged = flaggedFiles.length;
+
+        // Check if there are notes
+        const notesTextarea = document.getElementById(`${categoryKey}-notes`);
+        const hasNotes = notesTextarea && notesTextarea.value.trim().length > 0;
+
+        // Update data attributes
+        countContainer.setAttribute('data-total', total);
+        countContainer.setAttribute('data-checked', checked);
+        countContainer.setAttribute('data-flagged', flagged);
+        countContainer.setAttribute('data-has-notes', hasNotes ? 'true' : 'false');
+
+        // Update display
+        let html = `<span class="count-main">${total}</span>`;
+        if (checked > 0 || flagged > 0 || hasNotes) {
+          html += '<span class="count-details">';
+          if (checked > 0) {
+            html += `✓${checked}`;
+          }
+          if (checked > 0 && (flagged > 0 || hasNotes)) {
+            html += ' • ';
+          }
+          if (flagged > 0) {
+            html += `🗑${flagged}`;
+          }
+          if (flagged > 0 && hasNotes) {
+            html += ' • ';
+          }
+          if (hasNotes) {
+            html += '📝';
+          }
+          html += '</span>';
+        }
+
+        countContainer.innerHTML = html;
+      }
+
+      // Update favorite UI from real-time event
+      function updateFavoriteUI(category, filename, isFavorite) {
+        const key = `${category}:${filename}`;
+        const pending = pendingSaves.favorites.get(key);
+
+        // Don't update if there's a pending save with different state
+        // This prevents real-time updates from reverting local changes
+        if (pending && pending.isFavorite !== isFavorite) {
+          console.log('Skipping favorite UI update - pending save in progress');
+          return;
+        }
+
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) {
+          const checkbox = soundFile.querySelector('.favorite-checkbox');
+          checkbox.checked = isFavorite;
+          if (isFavorite) {
+            soundFile.classList.add('selected');
+          } else {
+            soundFile.classList.remove('selected');
+          }
+          // Update category counts
+          updateCategoryCounts(category);
+        }
+      }
+
+      // Update rating UI from real-time event
+      function updateRatingUI(category, filename, rating) {
+        const key = `${category}:${filename}`;
+        const pending = pendingSaves.ratings.get(key);
+
+        // Don't update if there's a pending save with different state
+        // This prevents real-time updates from reverting local changes
+        if (pending && pending.rating !== rating) {
+          console.log('Skipping rating UI update - pending save in progress');
+          return;
+        }
+
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) {
+          const container = soundFile.querySelector('.rating-stars');
+          const stars = container.querySelectorAll('.star');
+          container.setAttribute('data-rating', rating);
+          stars.forEach((star, index) => {
+            if (index < rating) {
+              star.classList.add('active');
+            } else {
+              star.classList.remove('active');
+            }
+          });
+        }
+      }
+
+      // Update note UI from real-time event
+      function updateNoteUI(category, notes) {
+        const textarea = document.getElementById(`${category}-notes`);
+        if (textarea && document.activeElement !== textarea) {
+          // Only update if user is not currently typing in this textarea
+          textarea.value = notes;
+          // Update category counts to show/hide note indicator
+          updateCategoryCounts(category);
+        }
+      }
+
+      // Update delete flag UI from real-time event
+      function updateDeleteFlagUI(category, filename, fileId, isFlagged) {
+        const pending = pendingSaves.deleteFlags.get(fileId);
+
+        // Don't update if there's a pending save with different state
+        if (pending && pending.isFlagged !== isFlagged) {
+          console.log('Skipping delete flag UI update - pending save in progress');
+          return;
+        }
+
+        const soundFile = document.querySelector(
+          `.sound-file[data-category="${category}"][data-file="${filename}"]`
+        );
+        if (soundFile) {
+          const deleteFlag = soundFile.querySelector('.delete-flag');
+          if (isFlagged) {
+            deleteFlag.classList.add('flagged');
+            deleteFlag.textContent = '🗑️';
+            deleteFlag.title = 'Flagged for deletion - Click to unflag';
+            soundFile.classList.add('flagged-for-deletion');
+          } else {
+            deleteFlag.classList.remove('flagged');
+            deleteFlag.textContent = '🗑';
+            deleteFlag.title = 'Flag for deletion';
+            soundFile.classList.remove('flagged-for-deletion');
+          }
+          // Update category counts
+          updateCategoryCounts(category);
+        }
+      }
+
+      // Save progress to server
+      function saveProgress() {
+        const progress = {
+          favorites: [],
+          ratings: {},
+          notes: {}
+        };
+
+        // Save favorites
+        document.querySelectorAll('.favorite-checkbox:checked').forEach(checkbox => {
+          const soundFile = checkbox.closest('.sound-file');
+          progress.favorites.push({
+            category: soundFile.dataset.category,
+            file: soundFile.dataset.file
+          });
+        });
+
+        // Save ratings
+        document.querySelectorAll('.rating-stars').forEach(container => {
+          const rating = container.getAttribute('data-rating');
+          const soundFile = container.closest('.sound-file');
+          if (rating > 0) {
+            const key = `${soundFile.dataset.category}/${soundFile.dataset.file}`;
+            progress.ratings[key] = rating;
+          }
+        });
+
+        // Save notes
+        document.querySelectorAll('.notes-textarea').forEach(textarea => {
+          if (textarea.value.trim()) {
+            const category = textarea.id.replace('-notes', '');
+            progress.notes[category] = textarea.value;
+          }
+        });
+
+        // Save to server
+        fetch('/api/selections', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(progress)
+        })
+        .then(response => response.json())
+        .then(data => {
+          showStatus(data.message || 'Progress saved to cloud!');
+        })
+        .catch(error => {
+          console.error('Save error:', error);
+          showStatus('Error saving progress');
+        });
+      }
+
+      // Export report
+      function exportReport() {
+        let report = '# IT\'S A WONDERFUL LIFE - SOUND SELECTION REPORT\n\n';
+        report += `Generated: ${new Date().toLocaleString()}\n\n`;
+        report += '---\n\n';
+
+        Object.keys(soundData).forEach(key => {
+          const data = soundData[key];
+          report += `## ${data.title}\n`;
+          report += `**Director's Original Request:** "${data.directorRequest}"\n`;
+          report += `**Description:** ${data.description}\n\n`;
+
+          // Get selected files
+          const selected = [];
+          document.querySelectorAll(`.sound-file[data-category="${key}"]`).forEach(soundFile => {
+            const checkbox = soundFile.querySelector('.favorite-checkbox');
+            const ratingContainer = soundFile.querySelector('.rating-stars');
+            const rating = ratingContainer.getAttribute('data-rating');
+            const fileName = soundFile.dataset.file;
+
+            if (checkbox.checked || rating > 0) {
+              let line = `- ${fileName}`;
+              if (checkbox.checked) line += ' ✅';
+              if (rating > 0) line += ` (${rating}★)`;
+              selected.push(line);
+            }
+          });
+
+          if (selected.length > 0) {
+            report += '**Selected Files:**\n';
+            report += selected.join('\n') + '\n\n';
+          } else {
+            report += '*No files selected*\n\n';
+          }
+
+          // Get notes
+          const textarea = document.getElementById(`${key}-notes`);
+          if (textarea && textarea.value.trim()) {
+            report += '**Director\'s Notes:**\n';
+            report += textarea.value + '\n\n';
+          }
+
+          report += '---\n\n';
+        });
+
+        // Create downloadable file
+        const blob = new Blob([report], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Sound_Selection_Report.md';
+        a.click();
+
+        showStatus('Report exported!');
+      }
+
+      // Clear all selections
+      function clearAll() {
+        if (!confirm('Are you sure you want to clear ALL selections and notes? This cannot be undone.')) {
+          return;
+        }
+
+        // Clear checkboxes
+        document.querySelectorAll('.favorite-checkbox').forEach(cb => {
+          cb.checked = false;
+        });
+
+        // Clear selected class
+        document.querySelectorAll('.sound-file.selected').forEach(sf => {
+          sf.classList.remove('selected');
+        });
+
+        // Clear ratings
+        document.querySelectorAll('.rating-stars').forEach(container => {
+          container.setAttribute('data-rating', '0');
+          container.querySelectorAll('.star').forEach(star => {
+            star.classList.remove('active');
+          });
+        });
+
+        // Clear notes
+        document.querySelectorAll('.notes-textarea').forEach(textarea => {
+          textarea.value = '';
+        });
+
+        // Clear from server
+        fetch('/api/selections', {
+          method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+          showStatus(data.message || 'All selections cleared from cloud!');
+        })
+        .catch(error => {
+          console.error('Clear error:', error);
+          showStatus('Error clearing selections');
+        });
+      }
+
+      // Show status message
+      function showStatus(message) {
+        const status = document.getElementById('statusMessage');
+        status.textContent = message;
+        status.classList.add('show');
+
+        setTimeout(() => {
+          status.classList.remove('show');
+        }, 2000);
+      }
+
+      // Initialize on page load
+      window.addEventListener('DOMContentLoaded', init);
